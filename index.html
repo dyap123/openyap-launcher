@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenYap Launcher</title>
+<meta name="theme-color" content="#060B18">
+<link rel="icon" href="cars/20.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Orbitron:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ── Theme: Blue & White Racer ─────────────────────────────────── */
+:root {
+  --bg: #060B18;
+  --panel-1: rgba(8, 16, 42, 0.92);
+  --panel-2: rgba(5, 10, 30, 0.96);
+  --accent1: #3B82F6;
+  --accent2: #E2E8F0;
+  --accent3: #60A5FA;
+  --accent4: #1D4ED8;
+  --accent1-10: rgba(59,130,246,0.10);
+  --accent1-06: rgba(59,130,246,0.06);
+  --accent3-10: rgba(96,165,250,0.10);
+  --card-border: rgba(59,130,246,0.08);
+  --card-hover: rgba(59,130,246,0.18);
+  --text: #F0F4FF;
+  --text-body: #94A3C8;
+  --text-muted: #475985;
+  --green: #22C55E;
+  --amber: #FBBF24;
+  --glow1: rgba(59,130,246,0.08);
+  --glow2: rgba(226,232,240,0.04);
+  --body-bg: linear-gradient(160deg, #060B18 0%, #0A1128 40%, #071020 70%, #050A15 100%);
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--body-bg);
+  color: var(--text-body);
+  font-family: 'Inter', system-ui, sans-serif;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+::selection { background: var(--card-hover); }
+
+/* ── Background ────────────────────────────────────────────────── */
+.bg-mesh { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+.bg-mesh::before {
+  content: '';
+  position: absolute;
+  width: 140%; height: 140%; top: -20%; left: -20%;
+  background:
+    radial-gradient(ellipse 600px 500px at 20% 30%, rgba(59,130,246,0.05) 0%, transparent 70%),
+    radial-gradient(ellipse 500px 600px at 80% 25%, rgba(226,232,240,0.03) 0%, transparent 70%),
+    radial-gradient(ellipse 800px 300px at 50% 95%, rgba(59,130,246,0.04) 0%, transparent 60%);
+  animation: meshDrift 60s linear infinite alternate;
+  will-change: transform;
+}
+.bg-mesh::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(59,130,246,0.006) 2px, rgba(59,130,246,0.006) 4px),
+    radial-gradient(circle, rgba(59,130,246,0.012) 1px, transparent 1px);
+  background-size: 100% 4px, 32px 32px;
+}
+@keyframes meshDrift {
+  0% { transform: translate3d(0,0,0); }
+  100% { transform: translate3d(-12px,8px,0); }
+}
+
+/* ── Header ────────────────────────────────────────────────────── */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: linear-gradient(180deg, rgba(6,11,24,0.90), rgba(6,11,24,0.65));
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--card-border);
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+.header::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 5%, var(--accent1) 25%, var(--accent2) 50%, var(--accent1) 75%, transparent 95%);
+  opacity: 0.5;
+}
+.brand {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, var(--accent1), var(--accent2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.brand-car {
+  height: 40px;
+  width: auto;
+  filter: drop-shadow(0 0 14px rgba(59,130,246,0.5)) drop-shadow(0 0 4px rgba(226,232,240,0.3));
+  transition: transform 0.4s var(--ease);
+  -webkit-text-fill-color: initial;
+}
+.brand-car:hover { transform: translateX(8px) scale(1.1); }
+.jp-brand {
+  font-size: 12px;
+  color: var(--accent3);
+  opacity: 0.45;
+  letter-spacing: 3px;
+  -webkit-text-fill-color: initial;
+  background: none;
+}
+
+/* ── App Grid ──────────────────────────────────────────────────── */
+.grid-wrap {
+  position: relative;
+  z-index: 1;
+  padding: 32px 24px 60px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+.subtitle {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-align: center;
+  margin-bottom: 24px;
+}
+.app-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+@media (max-width: 900px) { .app-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 580px) { .app-grid { grid-template-columns: 1fr; } }
+
+/* ── Card ──────────────────────────────────────────────────────── */
+.card {
+  position: relative;
+  background: linear-gradient(135deg, var(--panel-1), var(--panel-2));
+  backdrop-filter: blur(14px);
+  border: 1.5px solid transparent;
+  background-clip: padding-box;
+  border-radius: 18px;
+  padding: 22px 20px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 220px;
+  transition: transform 0.35s var(--ease), box-shadow 0.55s var(--ease);
+  overflow: hidden;
+  cursor: default;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  inset: -1.5px;
+  border-radius: 18px;
+  padding: 1.5px;
+  background: linear-gradient(135deg, var(--accent3), var(--accent1), var(--accent2), var(--accent3));
+  background-size: 300% 300%;
+  animation: borderShift 6s ease-in-out infinite;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0.12;
+  transition: opacity 0.35s;
+}
+@keyframes borderShift {
+  0%,100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+.card::after {
+  content: '';
+  position: absolute;
+  inset: -20px;
+  border-radius: 30px;
+  background: radial-gradient(ellipse at center, var(--accent1) 0%, transparent 55%);
+  filter: blur(36px);
+  opacity: 0;
+  transition: opacity 0.55s var(--ease), transform 0.55s var(--ease);
+  pointer-events: none;
+  z-index: -1;
+  transform: scale(0.85);
+}
+.card:hover { transform: translateY(-5px); box-shadow: 0 16px 48px rgba(0,0,0,0.5), 0 0 48px var(--accent1-10); }
+.card:hover::before { opacity: 0.7; }
+.card:hover::after { opacity: 0.4; transform: scale(1.05); }
+
+/* Card content */
+.card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+.card-name {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--accent3);
+}
+.card-name::before {
+  content: '';
+  display: inline-block;
+  width: 3px;
+  height: 15px;
+  background: var(--accent1);
+  border-radius: 2px;
+  margin-right: 10px;
+  vertical-align: middle;
+  box-shadow: 0 0 8px rgba(59,130,246,0.3);
+}
+.card-jp {
+  font-size: 10px;
+  color: var(--accent1);
+  opacity: 0.35;
+  letter-spacing: 2px;
+}
+.card-status {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+.status-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.status-dot.live { background: var(--green); box-shadow: 0 0 8px rgba(34,197,94,0.6); }
+.status-dot.local { background: var(--amber); box-shadow: 0 0 8px rgba(251,191,36,0.4); }
+.card-desc {
+  font-size: 12px;
+  color: var(--text-body);
+  line-height: 1.5;
+  flex: 1;
+}
+.card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid var(--card-border);
+}
+.launch-btn {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  padding: 8px 20px;
+  border-radius: 8px;
+  border: none;
+  background: linear-gradient(135deg, var(--accent1), var(--accent3));
+  color: #fff;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.25s var(--ease);
+  box-shadow: 0 2px 12px rgba(59,130,246,0.2);
+}
+.launch-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(59,130,246,0.4);
+  background: linear-gradient(135deg, var(--accent3), var(--accent2));
+  color: #060B18;
+}
+.card-car {
+  position: absolute;
+  bottom: -6px;
+  right: -8px;
+  height: 55px;
+  width: auto;
+  opacity: 0.07;
+  filter: drop-shadow(0 0 8px rgba(59,130,246,0.2));
+  pointer-events: none;
+  transition: opacity 0.4s;
+}
+.card:hover .card-car { opacity: 0.15; }
+
+/* ── Floating cars (back layer) ───────────────────────────────── */
+.flying-cars {
+  position: fixed; inset: 0; z-index: 0;
+  pointer-events: none; overflow: hidden;
+}
+.fly-car {
+  position: absolute;
+  opacity: 0.10;
+  filter: drop-shadow(0 0 16px rgba(59,130,246,0.12));
+  will-change: transform;
+}
+.fly-1 { width: 170px; top: 8%; right: 6%; animation: flyArc1 18s ease-in-out infinite; }
+.fly-2 { width: 130px; top: 40%; left: 2%; animation: flyWeave2 14s ease-in-out infinite; }
+.fly-3 { width: 150px; bottom: 5%; right: 3%; animation: flyPatrol3 20s ease-in-out infinite; }
+.fly-4 { width: 110px; top: 3%; left: 8%; opacity: 0.07; animation: flyHover4 12s ease-in-out infinite; }
+@keyframes flyArc1 {
+  0%   { transform: scaleX(-1) translate3d(0,0,0) rotate(-2deg); }
+  25%  { transform: scaleX(-1) translate3d(-60px,30px,0) rotate(1deg); }
+  50%  { transform: scaleX(-1) translate3d(-100px,10px,0) rotate(-1deg); }
+  75%  { transform: scaleX(-1) translate3d(-50px,-20px,0) rotate(2deg); }
+  100% { transform: scaleX(-1) translate3d(0,0,0) rotate(-2deg); }
+}
+@keyframes flyWeave2 {
+  0%   { transform: translate3d(0,0,0) rotate(0deg); }
+  20%  { transform: translate3d(40px,-25px,0) rotate(-2deg); }
+  40%  { transform: translate3d(80px,5px,0) rotate(1deg); }
+  60%  { transform: translate3d(50px,30px,0) rotate(-1deg); }
+  80%  { transform: translate3d(15px,10px,0) rotate(2deg); }
+  100% { transform: translate3d(0,0,0) rotate(0deg); }
+}
+@keyframes flyPatrol3 {
+  0%   { transform: scaleX(-1) translate3d(0,0,0) rotate(0deg); }
+  33%  { transform: scaleX(-1) translate3d(-70px,-30px,0) rotate(3deg); }
+  66%  { transform: scaleX(-1) translate3d(-30px,15px,0) rotate(-2deg); }
+  100% { transform: scaleX(-1) translate3d(0,0,0) rotate(0deg); }
+}
+@keyframes flyHover4 {
+  0%,100% { transform: translate3d(0,0,0) rotate(0deg); }
+  25%  { transform: translate3d(10px,-15px,0) rotate(-1deg); }
+  50%  { transform: translate3d(25px,5px,0) rotate(1deg); }
+  75%  { transform: translate3d(8px,12px,0) rotate(-1deg); }
+}
+
+/* ── Fly-by cars (front layer) ────────────────────────────────── */
+.flyby-cars {
+  position: fixed; inset: 0; z-index: 55;
+  pointer-events: none; overflow: hidden;
+}
+.flyby {
+  position: absolute;
+  will-change: transform, opacity;
+  filter: drop-shadow(0 0 20px rgba(59,130,246,0.2)) drop-shadow(0 4px 12px rgba(0,0,0,0.5));
+}
+.flyby-1 { width: 190px; top: 20%; right: -200px; animation: flybyRTL 13s cubic-bezier(0.4,0,0.2,1) infinite; animation-delay: 3s; }
+.flyby-2 { width: 150px; bottom: 22%; left: -170px; transform: scaleX(-1); animation: flybyLTR 16s cubic-bezier(0.4,0,0.2,1) infinite; animation-delay: 9s; }
+@keyframes flybyRTL {
+  0%   { transform: translate3d(0,0,0); opacity: 0; }
+  5%   { opacity: 0.28; }
+  15%  { transform: translate3d(-40vw,-15px,0) rotate(-1deg); opacity: 0.28; }
+  45%  { transform: translate3d(-85vw,10px,0) rotate(1deg); opacity: 0.22; }
+  55%  { transform: translate3d(-110vw,-5px,0); opacity: 0.12; }
+  60%  { transform: translate3d(-130vw,0,0); opacity: 0; }
+  100% { transform: translate3d(-130vw,0,0); opacity: 0; }
+}
+@keyframes flybyLTR {
+  0%   { transform: scaleX(-1) translate3d(0,0,0); opacity: 0; }
+  4%   { opacity: 0.22; }
+  12%  { transform: scaleX(-1) translate3d(-35vw,10px,0) rotate(1deg); opacity: 0.22; }
+  40%  { transform: scaleX(-1) translate3d(-80vw,-8px,0) rotate(-1deg); opacity: 0.18; }
+  52%  { transform: scaleX(-1) translate3d(-110vw,5px,0); opacity: 0.08; }
+  58%  { transform: scaleX(-1) translate3d(-130vw,0,0); opacity: 0; }
+  100% { transform: scaleX(-1) translate3d(-130vw,0,0); opacity: 0; }
+}
+@media (max-width: 700px) {
+  .fly-car, .flyby { display: none; }
+  .brand { font-size: 16px; letter-spacing: 2px; }
+}
+
+/* ── Footer ────────────────────────────────────────────────────── */
+.footer {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+}
+</style>
+</head>
+<body>
+
+<div class="bg-mesh"></div>
+
+<!-- Back-layer floating cars -->
+<div class="flying-cars" aria-hidden="true">
+  <img src="cars/1.png" class="fly-car fly-1" alt="">
+  <img src="cars/55.png" class="fly-car fly-2" alt="">
+  <img src="cars/70.png" class="fly-car fly-3" alt="">
+  <img src="cars/100.png" class="fly-car fly-4" alt="">
+</div>
+
+<!-- Front-layer fly-by cars -->
+<div class="flyby-cars" aria-hidden="true">
+  <img src="cars/5.png" class="flyby flyby-1" alt="">
+  <img src="cars/120.png" class="flyby flyby-2" alt="">
+</div>
+
+<header class="header">
+  <div class="brand">
+    <img src="cars/20.png" alt="" class="brand-car">
+    <span>OpenYap Launcher</span>
+    <span class="jp-brand">ランチャー</span>
+  </div>
+</header>
+
+<main class="grid-wrap">
+  <div class="subtitle">Select Application · アプリを選択</div>
+  <div class="app-grid">
+
+    <!-- Command Center -->
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <div class="card-name">Command Center</div>
+          <div class="card-jp">指令室</div>
+        </div>
+        <div class="card-status"><span class="status-dot live"></span><span style="color:var(--green)">Live</span></div>
+      </div>
+      <div class="card-desc">Live construction dashboard with Alfred AI, embed tracking, pour lookahead, and project health radar.</div>
+      <div class="card-foot">
+        <a href="https://dyap123.github.io/openyap-cc/" target="_blank" class="launch-btn">Launch ↗</a>
+      </div>
+      <img src="cars/42.png" class="card-car" alt="">
+    </div>
+
+    <!-- CUP Dashboard -->
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <div class="card-name">CUP Dashboard</div>
+          <div class="card-jp">打設管理</div>
+        </div>
+        <div class="card-status"><span class="status-dot live"></span><span style="color:var(--green)">Live</span></div>
+      </div>
+      <div class="card-desc">Pour tracking, live pours with Firebase, embed checklists, footing maps, and day log management.</div>
+      <div class="card-foot">
+        <a href="https://dyap123.github.io/cup-dashboard/" target="_blank" class="launch-btn">Launch ↗</a>
+      </div>
+      <img src="cars/55.png" class="card-car" alt="">
+    </div>
+
+    <!-- Roadmap -->
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <div class="card-name">Roadmap</div>
+          <div class="card-jp">ロードマップ</div>
+        </div>
+        <div class="card-status"><span class="status-dot live"></span><span style="color:var(--green)">Live</span></div>
+      </div>
+      <div class="card-desc">Business roadmap with 3D construction site, WebGL shaders, scroll-driven building animation, and financials.</div>
+      <div class="card-foot">
+        <a href="https://dyap123.github.io/openyap-roadmap/" target="_blank" class="launch-btn">Launch ↗</a>
+      </div>
+      <img src="cars/150.png" class="card-car" alt="">
+    </div>
+
+    <!-- Family Trip -->
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <div class="card-name">Family Trip</div>
+          <div class="card-jp">家族旅行</div>
+        </div>
+        <div class="card-status"><span class="status-dot live"></span><span style="color:var(--green)">Live</span></div>
+      </div>
+      <div class="card-desc">California trip planner PWA for 21-person Singapore family trip. Live schedule, logistics, food, and budget.</div>
+      <div class="card-foot">
+        <a href="https://dyap123.github.io/yap-family-trip/" target="_blank" class="launch-btn">Launch ↗</a>
+      </div>
+      <img src="cars/10.png" class="card-car" alt="">
+    </div>
+
+    <!-- Dashboard -->
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <div class="card-name">Dashboard</div>
+          <div class="card-jp">ダッシュボード</div>
+        </div>
+        <div class="card-status"><span class="status-dot live"></span><span style="color:var(--green)">Live</span></div>
+      </div>
+      <div class="card-desc">General OpenYap project dashboard with light/dark theme toggle and overview metrics.</div>
+      <div class="card-foot">
+        <a href="https://dyap123.github.io/openyap-dashboard/" target="_blank" class="launch-btn">Launch ↗</a>
+      </div>
+      <img src="cars/88.png" class="card-car" alt="">
+    </div>
+
+    <!-- Todo -->
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <div class="card-name">Todo</div>
+          <div class="card-jp">タスク管理</div>
+        </div>
+        <div class="card-status"><span class="status-dot live"></span><span style="color:var(--green)">Live</span></div>
+      </div>
+      <div class="card-desc">Task management with Firebase backend, multiple color themes, and persistent state.</div>
+      <div class="card-foot">
+        <a href="https://dyap123.github.io/openyap-todo/" target="_blank" class="launch-btn">Launch ↗</a>
+      </div>
+      <img src="cars/1.png" class="card-car" alt="">
+    </div>
+
+    <!-- Vault Brain -->
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <div class="card-name">Vault Brain</div>
+          <div class="card-jp">知識庫</div>
+        </div>
+        <div class="card-status"><span class="status-dot local"></span><span style="color:var(--amber)">Local</span></div>
+      </div>
+      <div class="card-desc">3D knowledge vault visualizer with sprite-based nodes, Alfred chat, ElevenLabs voice, and dual vault support.</div>
+      <div class="card-foot">
+        <a href="http://localhost:8889" target="_blank" class="launch-btn">Launch ↗</a>
+      </div>
+      <img src="cars/70.png" class="card-car" alt="">
+    </div>
+
+    <!-- Social -->
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <div class="card-name">Social</div>
+          <div class="card-jp">ソーシャル</div>
+        </div>
+        <div class="card-status"><span class="status-dot local"></span><span style="color:var(--amber)">Local</span></div>
+      </div>
+      <div class="card-desc">Social media manager for TikTok, YouTube Shorts, and Instagram. Auto-clip bot, trending scraper, vault brain.</div>
+      <div class="card-foot">
+        <a href="http://localhost:3000" target="_blank" class="launch-btn">Launch ↗</a>
+      </div>
+      <img src="cars/100.png" class="card-car" alt="">
+    </div>
+
+    <!-- Const Agent -->
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <div class="card-name">Const Agent</div>
+          <div class="card-jp">建設AI</div>
+        </div>
+        <div class="card-status"><span class="status-dot local"></span><span style="color:var(--amber)">Local</span></div>
+      </div>
+      <div class="card-desc">AI construction PM with Alfred assistant, agent pipeline, tool tracker, advisory team, and web UI.</div>
+      <div class="card-foot">
+        <a href="https://localhost:8484" target="_blank" class="launch-btn">Launch ↗</a>
+      </div>
+      <img src="cars/120.png" class="card-car" alt="">
+    </div>
+
+  </div>
+</main>
+
+<footer class="footer">
+  OpenYap AI · Built by Danzel Yap · 走り屋 · 2026
+</footer>
+
+</body>
+</html>
