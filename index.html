@@ -1,648 +1,339 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OpenYap Launcher</title>
-<meta name="theme-color" content="#060B18">
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>OpenYap Launcher · Wangan OS</title>
+<meta name="theme-color" content="#000000">
 <link rel="icon" href="cars/20.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Orbitron:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Space+Grotesk:wght@400;500;700;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script>
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "outline": "#849495",
+        "primary": "#dbfcff",
+        "primary-container": "#00f0ff",
+        "secondary-container": "#ff4b89",
+        "tertiary-container": "#33fb0a",
+        "surface": "#131315",
+        "surface-container": "#201f21",
+        "surface-container-low": "#1b1b1d",
+        "surface-container-high": "#2a2a2c",
+        "surface-bright": "#39393b",
+        "surface-container-lowest": "#0e0e10",
+        "on-surface": "#e5e1e4",
+        "on-surface-variant": "#b9cacb",
+        "on-background": "#e5e1e4",
+        "outline-variant": "#3b494b",
+        "background": "#131315",
+        "surface-tint": "#00dbe9"
+      },
+      borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" },
+      spacing: { unit: "4px", gutter: "16px", "panel-padding": "20px", margin: "28px" },
+      fontFamily: {
+        "body-lg": ["Inter"], "headline-lg": ["Space Grotesk"],
+        "label-caps": ["Space Grotesk"], "data-mono": ["Space Grotesk"], "headline-md": ["Space Grotesk"]
+      },
+      fontSize: {
+        "body-lg": ["18px", { lineHeight: "1.6", letterSpacing: "0", fontWeight: "400" }],
+        "headline-lg": ["44px", { lineHeight: "1.1", letterSpacing: "-0.04em", fontWeight: "700" }],
+        "label-caps": ["11px", { lineHeight: "1", letterSpacing: "0.2em", fontWeight: "700" }],
+        "data-mono": ["13px", { lineHeight: "1.4", letterSpacing: "0.08em", fontWeight: "500" }],
+        "headline-md": ["22px", { lineHeight: "1.15", letterSpacing: "-0.02em", fontWeight: "700" }]
+      },
+      backgroundImage: {
+        'tach-glow': 'radial-gradient(circle at right center, rgba(0,240,255,0.15) 0%, transparent 60%)'
+      }
+    }
+  }
+}
+</script>
 <style>
-/* ── Theme: Blue & White Racer ─────────────────────────────────── */
-:root {
-  --bg: #060B18;
-  --panel-1: rgba(8, 16, 42, 0.92);
-  --panel-2: rgba(5, 10, 30, 0.96);
-  --accent1: #3B82F6;
-  --accent2: #E2E8F0;
-  --accent3: #60A5FA;
-  --accent4: #1D4ED8;
-  --accent1-10: rgba(59,130,246,0.10);
-  --accent1-06: rgba(59,130,246,0.06);
-  --accent3-10: rgba(96,165,250,0.10);
-  --card-border: rgba(59,130,246,0.08);
-  --card-hover: rgba(59,130,246,0.18);
-  --text: #F0F4FF;
-  --text-body: #94A3C8;
-  --text-muted: #475985;
-  --green: #22C55E;
-  --amber: #FBBF24;
-  --glow1: rgba(59,130,246,0.08);
-  --glow2: rgba(226,232,240,0.04);
-  --body-bg: linear-gradient(160deg, #060B18 0%, #0A1128 40%, #071020 70%, #050A15 100%);
-  --ease: cubic-bezier(0.16, 1, 0.3, 1);
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  background: var(--body-bg);
-  color: var(--text-body);
-  font-family: 'Inter', system-ui, sans-serif;
-  min-height: 100vh;
-  -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
-}
-::selection { background: var(--card-hover); }
+  body {
+    background-color: #000000;
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(0,240,255,0.03) 1px, rgba(0,240,255,0.03) 2px),
+      repeating-linear-gradient(90deg, transparent, transparent 1px, rgba(0,240,255,0.03) 1px, rgba(0,240,255,0.03) 2px);
+    background-size: 64px 64px;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  .carbon-panel {
+    background-color: #1A1A1D;
+    background-image:
+      repeating-linear-gradient(45deg, rgba(255,255,255,0.02) 0, rgba(255,255,255,0.02) 2px, transparent 2px, transparent 4px),
+      repeating-linear-gradient(135deg, rgba(255,255,255,0.02) 0, rgba(255,255,255,0.02) 2px, transparent 2px, transparent 4px);
+  }
+  .neon-border {
+    box-shadow: 0 0 10px rgba(0,240,255,0.3), inset 0 0 5px rgba(0,240,255,0.2);
+    border: 1px solid rgba(0,240,255,0.5);
+  }
+  .hud-glass {
+    background: rgba(26,26,29,0.72);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+  .btn-dual-tone {
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+    transition: all 0.2s ease-in-out;
+  }
+  .card-glow { transition: all .25s ease-in-out; }
+  .card-glow:hover {
+    box-shadow: 0 0 24px rgba(0,240,255,0.35);
+    border-color: #00f0ff;
+    transform: translateY(-2px);
+  }
+  .card-car {
+    position: absolute;
+    right: -16px;
+    bottom: 24px;
+    width: 220px;
+    opacity: 0.12;
+    pointer-events: none;
+    transition: opacity .3s ease, transform .5s cubic-bezier(.16,1,.3,1), right .4s ease;
+    image-rendering: pixelated;
+    filter: drop-shadow(0 0 18px rgba(0,240,255,0.25));
+    z-index: 2;
+  }
+  .card-glow:hover .card-car {
+    opacity: 0.30;
+    transform: translateX(-8px) scale(1.05);
+  }
 
-/* ── Background ────────────────────────────────────────────────── */
-.bg-mesh { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
-.bg-mesh::before {
-  content: '';
-  position: absolute;
-  width: 140%; height: 140%; top: -20%; left: -20%;
-  background:
-    radial-gradient(ellipse 600px 500px at 20% 30%, rgba(59,130,246,0.05) 0%, transparent 70%),
-    radial-gradient(ellipse 500px 600px at 80% 25%, rgba(226,232,240,0.03) 0%, transparent 70%),
-    radial-gradient(ellipse 800px 300px at 50% 95%, rgba(59,130,246,0.04) 0%, transparent 60%);
-  animation: meshDrift 60s linear infinite alternate;
-  will-change: transform;
-}
-.bg-mesh::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(59,130,246,0.006) 2px, rgba(59,130,246,0.006) 4px),
-    radial-gradient(circle, rgba(59,130,246,0.012) 1px, transparent 1px);
-  background-size: 100% 4px, 32px 32px;
-}
-@keyframes meshDrift {
-  0% { transform: translate3d(0,0,0); }
-  100% { transform: translate3d(-12px,8px,0); }
-}
+  /* Flyby cars — keep the charm */
+  .flyby {
+    position: fixed;
+    pointer-events: none;
+    z-index: 1;
+    image-rendering: pixelated;
+    filter: drop-shadow(0 0 20px rgba(0,240,255,0.3));
+  }
+  .flyby-1 { top: 18%; left: -240px; width: 180px; animation: fly1 14s linear infinite; animation-delay: -3s; opacity: 0.45; }
+  .flyby-2 { top: 64%; right: -240px; width: 210px; animation: fly2 18s linear infinite; animation-delay: -7s; opacity: 0.35; transform: scaleX(-1); }
+  .flyby-3 { top: 45%; left: -220px; width: 160px; animation: fly1 22s linear infinite; animation-delay: -11s; opacity: 0.3; }
+  @keyframes fly1 {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(calc(100vw + 300px)); }
+  }
+  @keyframes fly2 {
+    0% { transform: scaleX(-1) translateX(0); }
+    100% { transform: scaleX(-1) translateX(calc(100vw + 300px)); }
+  }
 
-/* ── Header ────────────────────────────────────────────────────── */
-.header {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  background: linear-gradient(180deg, rgba(6,11,24,0.90), rgba(6,11,24,0.65));
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--card-border);
-  padding: 16px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-}
-.header::after {
-  content: '';
-  position: absolute;
-  bottom: -1px; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent 5%, var(--accent1) 25%, var(--accent2) 50%, var(--accent1) 75%, transparent 95%);
-  opacity: 0.5;
-}
-.brand {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 22px;
-  font-weight: 800;
-  letter-spacing: 4px;
-  text-transform: uppercase;
-  background: linear-gradient(135deg, var(--accent1), var(--accent2));
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-.brand-car {
-  height: 40px;
-  width: auto;
-  filter: drop-shadow(0 0 14px rgba(59,130,246,0.5)) drop-shadow(0 0 4px rgba(226,232,240,0.3));
-  transition: transform 0.4s var(--ease);
-  -webkit-text-fill-color: initial;
-}
-.brand-car:hover { transform: translateX(8px) scale(1.1); }
-.jp-brand {
-  font-size: 12px;
-  color: var(--accent3);
-  opacity: 0.45;
-  letter-spacing: 3px;
-  -webkit-text-fill-color: initial;
-  background: none;
-}
+  /* Status chip skew */
+  .chip-skew { transform: skew(-15deg); }
+  .chip-skew > span { display: inline-block; transform: skew(15deg); }
 
-/* ── App Grid ──────────────────────────────────────────────────── */
-.grid-wrap {
-  position: relative;
-  z-index: 1;
-  padding: 32px 24px 60px;
-  max-width: 1200px;
-  margin: 0 auto;
-  width: 100%;
-}
-.subtitle {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  text-align: center;
-  margin-bottom: 24px;
-}
-.app-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
-}
-@media (max-width: 900px) { .app-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 580px) { .app-grid { grid-template-columns: 1fr; } }
+  /* Tachometer sweep animation for primary card */
+  @keyframes tachSweep {
+    0% { transform: rotate(-120deg); }
+    100% { transform: rotate(120deg); }
+  }
+  .tach-needle {
+    animation: tachSweep 3s cubic-bezier(.5,.1,.5,.9) infinite alternate;
+    transform-origin: center;
+  }
 
-/* ── Card ──────────────────────────────────────────────────────── */
-.card {
-  position: relative;
-  background: linear-gradient(135deg, var(--panel-1), var(--panel-2));
-  backdrop-filter: blur(14px);
-  border: 1.5px solid transparent;
-  background-clip: padding-box;
-  border-radius: 18px;
-  padding: 22px 20px 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  min-height: 220px;
-  transition: transform 0.35s var(--ease), box-shadow 0.55s var(--ease);
-  overflow: hidden;
-  cursor: default;
-}
-.card::before {
-  content: '';
-  position: absolute;
-  inset: -1.5px;
-  border-radius: 18px;
-  padding: 1.5px;
-  background: linear-gradient(135deg, var(--accent3), var(--accent1), var(--accent2), var(--accent3));
-  background-size: 300% 300%;
-  animation: borderShift 6s ease-in-out infinite;
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-  opacity: 0.12;
-  transition: opacity 0.35s;
-}
-@keyframes borderShift {
-  0%,100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-}
-.card::after {
-  content: '';
-  position: absolute;
-  inset: -20px;
-  border-radius: 30px;
-  background: radial-gradient(ellipse at center, var(--accent1) 0%, transparent 55%);
-  filter: blur(36px);
-  opacity: 0;
-  transition: opacity 0.55s var(--ease), transform 0.55s var(--ease);
-  pointer-events: none;
-  z-index: -1;
-  transform: scale(0.85);
-}
-.card:hover { transform: translateY(-5px); box-shadow: 0 16px 48px rgba(0,0,0,0.5), 0 0 48px var(--accent1-10); }
-.card:hover::before { opacity: 0.7; }
-.card:hover::after { opacity: 0.4; transform: scale(1.05); }
-
-/* Card content */
-.card-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 8px;
-}
-.card-name {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 16px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  color: var(--accent3);
-}
-.card-name::before {
-  content: '';
-  display: inline-block;
-  width: 3px;
-  height: 15px;
-  background: var(--accent1);
-  border-radius: 2px;
-  margin-right: 10px;
-  vertical-align: middle;
-  box-shadow: 0 0 8px rgba(59,130,246,0.3);
-}
-.card-jp {
-  font-size: 10px;
-  color: var(--accent1);
-  opacity: 0.35;
-  letter-spacing: 2px;
-}
-.card-status {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 8px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  white-space: nowrap;
-}
-.status-dot {
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-.status-dot.live { background: var(--green); box-shadow: 0 0 8px rgba(34,197,94,0.6); }
-.status-dot.local { background: var(--amber); box-shadow: 0 0 8px rgba(251,191,36,0.4); }
-.card-desc {
-  font-size: 12px;
-  color: var(--text-body);
-  line-height: 1.5;
-  flex: 1;
-}
-.card-foot {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: auto;
-  padding-top: 12px;
-  border-top: 1px solid var(--card-border);
-}
-.launch-btn {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  padding: 8px 20px;
-  border-radius: 8px;
-  border: none;
-  background: linear-gradient(135deg, var(--accent1), var(--accent3));
-  color: #fff;
-  cursor: pointer;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  transition: all 0.25s var(--ease);
-  box-shadow: 0 2px 12px rgba(59,130,246,0.2);
-}
-.launch-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 24px rgba(59,130,246,0.4);
-  background: linear-gradient(135deg, var(--accent3), var(--accent2));
-  color: #060B18;
-}
-.card-car {
-  position: absolute;
-  bottom: -6px;
-  right: -8px;
-  height: 55px;
-  width: auto;
-  opacity: 0.07;
-  filter: drop-shadow(0 0 8px rgba(59,130,246,0.2));
-  pointer-events: none;
-  transition: opacity 0.4s;
-}
-.card:hover .card-car { opacity: 0.15; }
-
-/* ── Floating cars (back layer) ───────────────────────────────── */
-.flying-cars {
-  position: fixed; inset: 0; z-index: 0;
-  pointer-events: none; overflow: hidden;
-}
-.fly-car {
-  position: absolute;
-  opacity: 0.10;
-  filter: drop-shadow(0 0 16px rgba(59,130,246,0.12));
-  will-change: transform;
-}
-.fly-1 { width: 170px; top: 8%; right: 6%; animation: flyArc1 18s ease-in-out infinite; }
-.fly-2 { width: 130px; top: 40%; left: 2%; animation: flyWeave2 14s ease-in-out infinite; }
-.fly-3 { width: 150px; bottom: 5%; right: 3%; animation: flyPatrol3 20s ease-in-out infinite; }
-.fly-4 { width: 110px; top: 3%; left: 8%; opacity: 0.07; animation: flyHover4 12s ease-in-out infinite; }
-@keyframes flyArc1 {
-  0%   { transform: scaleX(-1) translate3d(0,0,0) rotate(-2deg); }
-  25%  { transform: scaleX(-1) translate3d(-60px,30px,0) rotate(1deg); }
-  50%  { transform: scaleX(-1) translate3d(-100px,10px,0) rotate(-1deg); }
-  75%  { transform: scaleX(-1) translate3d(-50px,-20px,0) rotate(2deg); }
-  100% { transform: scaleX(-1) translate3d(0,0,0) rotate(-2deg); }
-}
-@keyframes flyWeave2 {
-  0%   { transform: translate3d(0,0,0) rotate(0deg); }
-  20%  { transform: translate3d(40px,-25px,0) rotate(-2deg); }
-  40%  { transform: translate3d(80px,5px,0) rotate(1deg); }
-  60%  { transform: translate3d(50px,30px,0) rotate(-1deg); }
-  80%  { transform: translate3d(15px,10px,0) rotate(2deg); }
-  100% { transform: translate3d(0,0,0) rotate(0deg); }
-}
-@keyframes flyPatrol3 {
-  0%   { transform: scaleX(-1) translate3d(0,0,0) rotate(0deg); }
-  33%  { transform: scaleX(-1) translate3d(-70px,-30px,0) rotate(3deg); }
-  66%  { transform: scaleX(-1) translate3d(-30px,15px,0) rotate(-2deg); }
-  100% { transform: scaleX(-1) translate3d(0,0,0) rotate(0deg); }
-}
-@keyframes flyHover4 {
-  0%,100% { transform: translate3d(0,0,0) rotate(0deg); }
-  25%  { transform: translate3d(10px,-15px,0) rotate(-1deg); }
-  50%  { transform: translate3d(25px,5px,0) rotate(1deg); }
-  75%  { transform: translate3d(8px,12px,0) rotate(-1deg); }
-}
-
-/* ── Fly-by cars (front layer) ────────────────────────────────── */
-.flyby-cars {
-  position: fixed; inset: 0; z-index: 55;
-  pointer-events: none; overflow: hidden;
-}
-.flyby {
-  position: absolute;
-  will-change: transform, opacity;
-  filter: drop-shadow(0 0 20px rgba(59,130,246,0.2)) drop-shadow(0 4px 12px rgba(0,0,0,0.5));
-}
-.flyby-1 { width: 190px; top: 20%; right: -200px; animation: flybyRTL 13s cubic-bezier(0.4,0,0.2,1) infinite; animation-delay: 3s; }
-.flyby-2 { width: 150px; bottom: 22%; left: -170px; transform: scaleX(-1); animation: flybyLTR 16s cubic-bezier(0.4,0,0.2,1) infinite; animation-delay: 9s; }
-@keyframes flybyRTL {
-  0%   { transform: translate3d(0,0,0); opacity: 0; }
-  5%   { opacity: 0.28; }
-  15%  { transform: translate3d(-40vw,-15px,0) rotate(-1deg); opacity: 0.28; }
-  45%  { transform: translate3d(-85vw,10px,0) rotate(1deg); opacity: 0.22; }
-  55%  { transform: translate3d(-110vw,-5px,0); opacity: 0.12; }
-  60%  { transform: translate3d(-130vw,0,0); opacity: 0; }
-  100% { transform: translate3d(-130vw,0,0); opacity: 0; }
-}
-@keyframes flybyLTR {
-  0%   { transform: scaleX(-1) translate3d(0,0,0); opacity: 0; }
-  4%   { opacity: 0.22; }
-  12%  { transform: scaleX(-1) translate3d(-35vw,10px,0) rotate(1deg); opacity: 0.22; }
-  40%  { transform: scaleX(-1) translate3d(-80vw,-8px,0) rotate(-1deg); opacity: 0.18; }
-  52%  { transform: scaleX(-1) translate3d(-110vw,5px,0); opacity: 0.08; }
-  58%  { transform: scaleX(-1) translate3d(-130vw,0,0); opacity: 0; }
-  100% { transform: scaleX(-1) translate3d(-130vw,0,0); opacity: 0; }
-}
-@media (max-width: 700px) {
-  .fly-car, .flyby { display: none; }
-  .brand { font-size: 16px; letter-spacing: 2px; }
-}
-
-/* ── Footer ────────────────────────────────────────────────────── */
-.footer {
-  position: relative;
-  z-index: 1;
-  text-align: center;
-  padding: 20px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 9px;
-  color: var(--text-muted);
-  letter-spacing: 1px;
-}
+  /* Line clamp util (shouldn't need plugin) */
+  .clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
 </style>
 </head>
-<body>
+<body class="text-on-background min-h-screen flex flex-col font-['Inter'] text-[15px] relative">
 
-<div class="bg-mesh"></div>
+<!-- Tachometer ambient glow -->
+<div class="fixed top-0 right-0 w-[800px] h-full bg-tach-glow pointer-events-none z-[-1]"></div>
 
-<!-- Back-layer floating cars -->
-<div class="flying-cars" aria-hidden="true">
-  <img src="cars/1.png" class="fly-car fly-1" alt="">
-  <img src="cars/55.png" class="fly-car fly-2" alt="">
-  <img src="cars/70.png" class="fly-car fly-3" alt="">
-  <img src="cars/100.png" class="fly-car fly-4" alt="">
-</div>
+<!-- Flyby cars — preserved charm -->
+<img src="cars/5.png" class="flyby flyby-1" alt="">
+<img src="cars/120.png" class="flyby flyby-2" alt="">
+<img src="cars/70.png" class="flyby flyby-3" alt="">
 
-<!-- Front-layer fly-by cars -->
-<div class="flyby-cars" aria-hidden="true">
-  <img src="cars/5.png" class="flyby flyby-1" alt="">
-  <img src="cars/120.png" class="flyby flyby-2" alt="">
-</div>
-
-<header class="header">
-  <div class="brand">
-    <img src="cars/20.png" alt="" class="brand-car">
-    <span>OpenYap Launcher</span>
-    <span class="jp-brand">ランチャー</span>
+<!-- TopNavBar -->
+<header class="bg-black/90 backdrop-blur-xl border-b-2 border-cyan-500/30 shadow-[0_4px_20px_rgba(0,0,0,0.9)] flex justify-between items-center w-full px-6 py-3 max-w-[100vw] z-50 sticky top-0">
+  <div class="flex items-center gap-gutter">
+    <img src="cars/20.png" alt="" class="h-7 w-auto" style="image-rendering:pixelated;filter:drop-shadow(0 0 6px rgba(0,240,255,0.5))">
+    <span class="text-2xl font-black italic tracking-widest text-cyan-400 drop-shadow-[0_0_8px_rgba(0,240,255,0.6)] font-['Space_Grotesk']">OPENYAP</span>
+    <div class="h-6 w-px bg-cyan-900/50 mx-2"></div>
+    <nav class="hidden md:flex gap-gutter">
+      <a class="text-cyan-400 border-b-2 border-cyan-400 pb-1 font-bold transition-all font-['Space_Grotesk'] tracking-tighter uppercase text-sm" href="#">Dashboard</a>
+      <a class="text-zinc-500 hover:text-cyan-300 transition-colors font-['Space_Grotesk'] tracking-tighter uppercase text-sm px-2" href="https://github.com/dyap123" target="_blank">Tuning</a>
+      <a class="text-zinc-500 hover:text-cyan-300 transition-colors font-['Space_Grotesk'] tracking-tighter uppercase text-sm px-2" href="#">Diagnostics</a>
+    </nav>
+  </div>
+  <div class="flex items-center gap-unit">
+    <span class="hidden md:inline text-[10px] font-mono text-cyan-500/60 tracking-[0.2em] uppercase mr-3">// D.YAP // PROJECT_ENG</span>
+    <button class="p-2 text-zinc-500 hover:bg-cyan-500/10 hover:text-cyan-300 transition-colors rounded" title="Settings">
+      <span class="material-symbols-outlined">settings</span>
+    </button>
+    <button class="p-2 text-zinc-500 hover:bg-cyan-500/10 hover:text-cyan-300 transition-colors rounded" title="Standby">
+      <span class="material-symbols-outlined">power_settings_new</span>
+    </button>
   </div>
 </header>
 
-<main class="grid-wrap">
-  <div class="subtitle">Select Application · アプリを選択</div>
-  <div class="app-grid">
+<main class="flex-grow container mx-auto px-gutter py-margin relative z-10 flex flex-col gap-margin pb-20">
 
-    <!-- Command Center -->
-    <div class="card">
-      <div class="card-head">
-        <div>
-          <div class="card-name">Command Center</div>
-          <div class="card-jp">指令室</div>
-        </div>
-        <div class="card-status"><span class="status-dot live"></span><span style="color:var(--green)">Live</span></div>
-      </div>
-      <div class="card-desc">Live construction dashboard with Alfred AI, embed tracking, pour lookahead, and project health radar.</div>
-      <div class="card-foot">
-        <a href="https://dyap123.github.io/openyap-cc/" target="_blank" class="launch-btn">Launch ↗</a>
-      </div>
-      <img src="cars/42.png" class="card-car" alt="">
-    </div>
-
-    <!-- CUP Dashboard -->
-    <div class="card">
-      <div class="card-head">
-        <div>
-          <div class="card-name">CUP Dashboard</div>
-          <div class="card-jp">打設管理</div>
-        </div>
-        <div class="card-status"><span class="status-dot live"></span><span style="color:var(--green)">Live</span></div>
-      </div>
-      <div class="card-desc">Pour tracking, live pours with Firebase, embed checklists, footing maps, and day log management.</div>
-      <div class="card-foot">
-        <a href="https://dyap123.github.io/cup-dashboard/" target="_blank" class="launch-btn">Launch ↗</a>
-      </div>
-      <img src="cars/55.png" class="card-car" alt="">
-    </div>
-
-    <!-- Roadmap -->
-    <div class="card">
-      <div class="card-head">
-        <div>
-          <div class="card-name">Roadmap</div>
-          <div class="card-jp">ロードマップ</div>
-        </div>
-        <div class="card-status"><span class="status-dot live"></span><span style="color:var(--green)">Live</span></div>
-      </div>
-      <div class="card-desc">Business roadmap with 3D construction site, WebGL shaders, scroll-driven building animation, and financials.</div>
-      <div class="card-foot">
-        <a href="https://dyap123.github.io/openyap-roadmap/" target="_blank" class="launch-btn">Launch ↗</a>
-      </div>
-      <img src="cars/150.png" class="card-car" alt="">
-    </div>
-
-    <!-- Roadmap (Variant) -->
-    <div class="card">
-      <div class="card-head">
-        <div>
-          <div class="card-name">Roadmap (Variant)</div>
-          <div class="card-jp">ロードマップ 試</div>
-        </div>
-        <div class="card-status"><span class="status-dot live"></span><span style="color:var(--green)">Live</span></div>
-      </div>
-      <div class="card-desc">Stitch-inspired restyle: neon blue/pink wireframe building, Space Grotesk display type, left-aligned hero, glass cards with gradient borders.</div>
-      <div class="card-foot">
-        <a href="https://dyap123.github.io/openyap-roadmap/variant.html" target="_blank" class="launch-btn">Launch ↗</a>
-      </div>
-      <img src="cars/150.png" class="card-car" alt="">
-    </div>
-
-    <!-- Family Trip -->
-    <div class="card">
-      <div class="card-head">
-        <div>
-          <div class="card-name">Family Trip</div>
-          <div class="card-jp">家族旅行</div>
-        </div>
-        <div class="card-status"><span class="status-dot live"></span><span style="color:var(--green)">Live</span></div>
-      </div>
-      <div class="card-desc">California trip planner PWA for 21-person Singapore family trip. Live schedule, logistics, food, and budget.</div>
-      <div class="card-foot">
-        <a href="https://dyap123.github.io/yap-family-trip/" target="_blank" class="launch-btn">Launch ↗</a>
-      </div>
-      <img src="cars/10.png" class="card-car" alt="">
-    </div>
-
-    <!-- Dashboard -->
-    <div class="card">
-      <div class="card-head">
-        <div>
-          <div class="card-name">Dashboard</div>
-          <div class="card-jp">ダッシュボード</div>
-        </div>
-        <div class="card-status"><span class="status-dot live"></span><span style="color:var(--green)">Live</span></div>
-      </div>
-      <div class="card-desc">General OpenYap project dashboard with light/dark theme toggle and overview metrics.</div>
-      <div class="card-foot">
-        <a href="https://dyap123.github.io/openyap-dashboard/" target="_blank" class="launch-btn">Launch ↗</a>
-      </div>
-      <img src="cars/88.png" class="card-car" alt="">
-    </div>
-
-    <!-- Todo -->
-    <div class="card">
-      <div class="card-head">
-        <div>
-          <div class="card-name">Todo</div>
-          <div class="card-jp">タスク管理</div>
-        </div>
-        <div class="card-status"><span class="status-dot live"></span><span style="color:var(--green)">Live</span></div>
-      </div>
-      <div class="card-desc">Task management with Firebase backend, multiple color themes, and persistent state.</div>
-      <div class="card-foot">
-        <a href="https://dyap123.github.io/openyap-todo/" target="_blank" class="launch-btn">Launch ↗</a>
-      </div>
-      <img src="cars/1.png" class="card-car" alt="">
-    </div>
-
-    <!-- Vault Brain -->
-    <div class="card">
-      <div class="card-head">
-        <div>
-          <div class="card-name">Vault Brain</div>
-          <div class="card-jp">知識庫</div>
-        </div>
-        <div class="card-status"><span class="status-dot local"></span><span style="color:var(--amber)">Local</span></div>
-      </div>
-      <div class="card-desc">3D knowledge vault visualizer with sprite-based nodes, Alfred chat, ElevenLabs voice, and dual vault support.</div>
-      <div class="card-foot">
-        <a href="http://localhost:8889" target="_blank" class="launch-btn">Launch ↗</a>
-      </div>
-      <img src="cars/70.png" class="card-car" alt="">
-    </div>
-
-    <!-- LUMINO Budget -->
-    <div class="card">
-      <div class="card-head">
-        <div>
-          <div class="card-name">LUMINO Budget</div>
-          <div class="card-jp">予算管理</div>
-        </div>
-        <div class="card-status"><span class="status-dot live"></span><span style="color:var(--green)">Live</span></div>
-      </div>
-      <div class="card-desc">Budget intelligence suite for OpenYap AI LLC. Track startup costs, expenses, revenue, burn rate, and runway. Node topology visualization with Excel export.</div>
-      <div class="card-foot">
-        <a href="https://dyap123.github.io/openyap-budget/" target="_blank" class="launch-btn">Launch ↗</a>
-      </div>
-      <img src="cars/30.png" class="card-car" alt="">
-    </div>
-
-    <!-- Hand Lab -->
-    <div class="card">
-      <div class="card-head">
-        <div>
-          <div class="card-name">Hand Lab</div>
-          <div class="card-jp">手の実験室</div>
-        </div>
-        <div class="card-status"><span class="status-dot local"></span><span style="color:var(--amber)">Local</span></div>
-      </div>
-      <div class="card-desc">Gesture-controlled vault brain. Hand tracking via camera — snap to activate, pinch to select nodes, orbit with your palm. Fill level detection for concrete pours.</div>
-      <div class="card-foot">
-        <a href="http://localhost:8891" target="_blank" class="launch-btn">Launch ↗</a>
-      </div>
-      <img src="cars/50.png" class="card-car" alt="">
-    </div>
-
-    <!-- Social -->
-    <div class="card">
-      <div class="card-head">
-        <div>
-          <div class="card-name">Social</div>
-          <div class="card-jp">ソーシャル</div>
-        </div>
-        <div class="card-status"><span class="status-dot local"></span><span style="color:var(--amber)">Local</span></div>
-      </div>
-      <div class="card-desc">Social media manager for TikTok, YouTube Shorts, and Instagram. Auto-clip bot, trending scraper, vault brain.</div>
-      <div class="card-foot">
-        <a href="http://localhost:3000" target="_blank" class="launch-btn">Launch ↗</a>
-      </div>
-      <img src="cars/100.png" class="card-car" alt="">
-    </div>
-
-    <!-- Const Agent -->
-    <div class="card">
-      <div class="card-head">
-        <div>
-          <div class="card-name">Const Agent</div>
-          <div class="card-jp">建設AI</div>
-        </div>
-        <div class="card-status"><span class="status-dot local"></span><span style="color:var(--amber)">Local</span></div>
-      </div>
-      <div class="card-desc">AI construction PM with Alfred assistant, agent pipeline, tool tracker, advisory team, and web UI.</div>
-      <div class="card-foot">
-        <a href="https://localhost:8484" target="_blank" class="launch-btn">Launch ↗</a>
-      </div>
-      <img src="cars/120.png" class="card-car" alt="">
-    </div>
-
-    <!-- Portfolio -->
-    <div class="card">
-      <div class="card-head">
-        <div>
-          <div class="card-name">Portfolio</div>
-          <div class="card-jp">ポートフォリオ</div>
-        </div>
-        <div class="card-status"><span class="status-dot live"></span><span style="color:var(--green)">Live</span></div>
-      </div>
-      <div class="card-desc">Professional portfolio showcasing OpenYap projects, construction field work, and technical skills.</div>
-      <div class="card-foot">
-        <a href="https://dyap123.github.io/portfolio/" target="_blank" class="launch-btn">Launch ↗</a>
-      </div>
-      <img src="cars/120.png" class="card-car" alt="">
-    </div>
-
+  <!-- Hero header -->
+  <div class="flex flex-col gap-2 border-l-4 border-primary-container pl-4 relative">
+    <div class="absolute -left-[4px] top-0 h-1/2 w-1 bg-white opacity-50"></div>
+    <h2 class="font-headline-lg text-headline-lg text-on-background uppercase italic tracking-tighter">Select Application</h2>
+    <p class="font-label-caps text-label-caps text-primary-container tracking-[0.3em] opacity-80">アプリケーションを選択</p>
   </div>
+
+  <!-- App Grid -->
+  <div id="appGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-gutter"></div>
+
 </main>
 
-<footer class="footer">
-  OpenYap AI · Built by Danzel Yap · 走り屋 · 2026
+<!-- Footer status bar -->
+<footer class="fixed bottom-0 left-0 w-full z-50 flex justify-between items-center px-6 py-2 border-t border-cyan-500/20 bg-gradient-to-r from-black via-zinc-950 to-black shadow-[0_-10px_30px_rgba(0,240,255,0.05)] backdrop-blur-md">
+  <div class="flex items-center gap-4">
+    <span class="text-pink-500 font-black font-mono text-[10px] uppercase tracking-[0.2em]">SYSTEM_STATUS: OPTIMAL // WANGAN_OS_v4.2</span>
+  </div>
+  <div class="hidden md:flex gap-6">
+    <span class="text-zinc-600 font-mono text-[10px] uppercase tracking-[0.2em]" id="timeStrip">LOCAL_TIME: --:--</span>
+    <span class="text-zinc-600 font-mono text-[10px] uppercase tracking-[0.2em]">DRIVER: D.YAP</span>
+    <span class="text-zinc-600 font-mono text-[10px] uppercase tracking-[0.2em]">MODE: ON_TRACK</span>
+  </div>
 </footer>
 
-</body>
-</html>
+<script>
+const APPS = [
+  { n: '01', name: 'Command Center', jp: '指令室', icon: 'speed', car: '42.png',
+    desc: 'Live construction dashboard — Alfred AI, embed tracking, pour lookahead, project health radar.',
+    url: 'https://dyap123.github.io/openyap-cc/', status: 'ONLINE', version: 'CMD-4.2.1', last: '12H AGO', featured: true },
+  { n: '02', name: 'CUP Dashboard', jp: '打設管理', icon: 'dashboard', car: '55.png',
+    desc: 'Pour tracking, live pours via Firebase, embed checklists, footing maps, day log management.',
+    url: 'https://dyap123.github.io/cup-dashboard/', status: 'ONLINE', version: 'PUR-2.8.0', last: '2H AGO' },
+  { n: '03', name: 'Todo', jp: 'タスク管理', icon: 'checklist', car: '1.png',
+    desc: 'Firebase task manager with RFIs tab, Sisyphus chart, Alfred brain, and satisfying completion chirp.',
+    url: 'https://dyap123.github.io/openyap-todo/', status: 'ONLINE', version: 'TSK-3.1.0', last: '5M AGO' },
+  { n: '04', name: 'Formwork', jp: '予算管理', icon: 'view_in_ar', car: '5.png',
+    desc: 'Budget intelligence — line items, Compare view, 3D lattice, burn rate, runway. Excel export.',
+    url: 'https://dyap123.github.io/openyap-budget/', status: 'ONLINE', version: 'FWK-2.0.0', last: '1D AGO' },
+  { n: '05', name: 'Roadmap', jp: 'ロードマップ', icon: 'map', car: '150.png',
+    desc: 'Business roadmap — 3D construction site, scroll-driven building, financials, WebGL shader bg.',
+    url: 'https://dyap123.github.io/openyap-roadmap/', status: 'ONLINE', version: 'MAP-2.1.0', last: '5H AGO' },
+  { n: '06', name: 'Roadmap · Stitch', jp: 'ロードマップ 試', icon: 'auto_awesome', car: '150.png',
+    desc: 'Stitch-inspired restyle — neon wireframe building, Space Grotesk display, gradient border cards.',
+    url: 'https://dyap123.github.io/openyap-roadmap/variant.html', status: 'UPDATE', version: 'MAP-V.BETA', last: '2D AGO' },
+  { n: '07', name: 'Dashboard', jp: 'ダッシュボード', icon: 'space_dashboard', car: '88.png',
+    desc: 'General OpenYap project dashboard — light/dark theme toggle and overview metrics.',
+    url: 'https://dyap123.github.io/openyap-dashboard/', status: 'ONLINE', version: 'DSH-1.2.0', last: '1W AGO' },
+  { n: '08', name: 'Family Trip', jp: '家族旅行', icon: 'flight_takeoff', car: '10.png',
+    desc: 'California trip PWA — 21-person Singapore family. Schedule, logistics, food, budget.',
+    url: 'https://dyap123.github.io/yap-family-trip/', status: 'ONLINE', version: 'TRP-1.0.3', last: '2D AGO' },
+  { n: '09', name: 'Portfolio', jp: 'ポートフォリオ', icon: 'badge', car: '120.png',
+    desc: 'Professional portfolio — OpenYap projects, construction field work, technical skills.',
+    url: 'https://dyap123.github.io/portfolio/', status: 'ONLINE', version: 'PRT-1.0.0', last: '3D AGO' },
+  { n: '10', name: 'Const Agent', jp: '建設AI', icon: 'smart_toy', car: '120.png',
+    desc: 'AI construction PM with Alfred, agent pipeline, tool tracker, advisory team, web UI. Port 8484.',
+    url: 'https://localhost:8484', status: 'LOCAL', version: 'AGT-4.7.0', last: 'NOW' },
+  { n: '11', name: 'Vault Brain', jp: '知識庫', icon: 'hub', car: '70.png',
+    desc: '3D knowledge vault — sprite-based nodes, Alfred chat, ElevenLabs voice, dual vault support.',
+    url: 'http://localhost:8889', status: 'LOCAL', version: 'VLT-1.3.2', last: 'NOW' },
+  { n: '12', name: 'Hand Lab', jp: '手の実験室', icon: 'pan_tool', car: '88.png',
+    desc: 'Gesture-controlled vault brain — hand tracking, pinch to select, orbit with your palm.',
+    url: 'http://localhost:8891', status: 'LOCAL', version: 'HND-0.4.0', last: '1D AGO' },
+  { n: '13', name: 'Social', jp: 'ソーシャル', icon: 'podcasts', car: '100.png',
+    desc: 'Social media manager — TikTok, YouTube Shorts, Instagram. Auto-clip, trending scraper, vault brain.',
+    url: 'http://localhost:3000', status: 'LOCAL', version: 'SOC-0.7.1', last: '4D AGO' },
+  { n: '14', name: 'Cost Codes', jp: 'コスト表', icon: 'qr_code_2', car: '20.png',
+    desc: 'Foreman cost code reference — 11×17 print sheets, English + Spanish, editable code list, PCI fallback.',
+    url: '../cost-codes/foreman-cost-codes.html', status: 'LOCAL', version: 'CST-1.0', last: 'TODAY' },
+];
+
+function statusStyle(status){
+  if(status === 'ONLINE') return {
+    bg: 'bg-primary-container', text: 'text-black', border: 'border-primary-container',
+    iconBox: 'bg-primary-container/20 border-primary-container/40',
+    iconColor: 'text-primary-container',
+    btnBorder: 'border-primary-container', btnText: 'text-primary-container',
+    btnHoverBg: 'group-hover:bg-primary-container group-hover:text-black',
+    stripBorder: 'border-primary-container/20', stripColor: 'text-primary-container/70'
+  };
+  if(status === 'UPDATE') return {
+    bg: 'bg-secondary-container', text: 'text-black', border: 'border-secondary-container',
+    iconBox: 'bg-secondary-container/20 border-secondary-container/40',
+    iconColor: 'text-secondary-container',
+    btnBorder: 'border-secondary-container', btnText: 'text-secondary-container',
+    btnHoverBg: 'group-hover:bg-secondary-container group-hover:text-black',
+    stripBorder: 'border-secondary-container/20', stripColor: 'text-secondary-container/70'
+  };
+  if(status === 'LOCAL') return {
+    bg: 'bg-tertiary-container', text: 'text-black', border: 'border-tertiary-container',
+    iconBox: 'bg-tertiary-container/20 border-tertiary-container/40',
+    iconColor: 'text-tertiary-container',
+    btnBorder: 'border-tertiary-container', btnText: 'text-tertiary-container',
+    btnHoverBg: 'group-hover:bg-tertiary-container group-hover:text-black',
+    stripBorder: 'border-tertiary-container/20', stripColor: 'text-tertiary-container/70'
+  };
+  return {
+    bg: 'bg-surface-bright', text: 'text-outline', border: 'border-outline/40',
+    iconBox: 'bg-surface-bright border-outline/30',
+    iconColor: 'text-outline',
+    btnBorder: 'border-outline', btnText: 'text-outline',
+    btnHoverBg: 'group-hover:bg-primary-container group-hover:text-black',
+    stripBorder: 'border-surface-bright', stripColor: 'text-outline'
+  };
+}
+
+function renderCard(app){
+  const s = statusStyle(app.status);
+  const featuredRing = app.featured ? 'neon-border' : `border ${app.status === 'ONLINE' ? 'border-primary-container/30' : 'border-surface-bright'}`;
+  return `
+    <a href="${app.url}" target="_blank" class="carbon-panel hud-glass ${featuredRing} rounded flex flex-col justify-between h-[280px] p-panel-padding card-glow relative group overflow-hidden transition-all no-underline">
+      <!-- corner number -->
+      <div class="absolute -right-6 -bottom-8 text-[110px] font-black text-white/[0.04] italic pointer-events-none group-hover:text-primary-container/[0.08] transition-colors select-none">${app.n}</div>
+      <!-- car sprite -->
+      <img src="cars/${app.car}" class="card-car" alt="">
+      <!-- top row -->
+      <div class="flex justify-between items-start z-10 relative">
+        <div class="p-3 rounded border ${s.iconBox}">
+          <span class="material-symbols-outlined text-3xl ${s.iconColor}" style="font-variation-settings:'FILL' 1;">${app.icon}</span>
+        </div>
+        <span class="chip-skew ${s.bg} ${s.text} font-label-caps text-label-caps px-3 py-1 rounded-sm"><span>${app.status}</span></span>
+      </div>
+      <!-- body -->
+      <div class="z-10 mt-auto relative">
+        <h3 class="font-headline-md text-headline-md text-white uppercase italic tracking-tighter mb-0.5">${app.name}</h3>
+        <p class="font-data-mono text-[10px] tracking-[0.25em] mb-2 ${s.iconColor} opacity-70">${app.jp}</p>
+        <p class="text-[12px] leading-snug text-outline mb-4 clamp-2">${app.desc}</p>
+        <div class="btn-dual-tone w-full border ${s.btnBorder} ${s.btnText} font-label-caps text-label-caps py-3 tracking-[0.2em] uppercase bg-surface-container-low flex justify-center items-center gap-2 ${s.btnHoverBg}">
+          LAUNCH <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+        </div>
+      </div>
+      <!-- telemetry strip -->
+      <div class="absolute bottom-0 left-0 w-full bg-black/60 border-t ${s.stripBorder} py-1 px-3 flex justify-between items-center font-data-mono text-[9px] ${s.stripColor}">
+        <span>${app.version}</span>
+        <span>LAST: ${app.last}</span>
+      </div>
+    </a>`;
+}
+
+document.getElementById('appGrid').innerHTML = APPS.map(renderCard).join('');
+
+// Live clock in footer
+function tickClock(){
+  const el = document.getElementById('timeStrip');
+  if(!el) return;
+  const d = new Date();
+  const hh = String(d.getHours()).padStart(2,'0');
+  const mm = String(d.getMinutes()).padStart(2,'0');
+  const ss = String(d.getSeconds()).padStart(2,'0');
+  el.textContent = `LOCAL_TIME: ${hh}:${mm}:${ss}`;
+}
+tickClock();
+setInterval(tickClock, 1000);
+</script>
+
+</body></html>
