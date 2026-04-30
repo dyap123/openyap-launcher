@@ -145,6 +145,144 @@ tailwind.config = {
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
+
+  /* ── 2026-04-30 polish pass ─────────────────────────────────────── */
+
+  /* Keyboard focus ring on cards — Wangan-OS cyan to match hover state */
+  a.card-glow:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px #00f0ff, 0 0 28px rgba(0,240,255,0.45);
+    border-color: #00f0ff;
+    transform: translateY(-2px);
+  }
+  /* Focus ring on filter chips + search */
+  .lc-chip:focus-visible, .lc-search:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px #00f0ff;
+  }
+
+  /* OFFLINE status — disabled / muted look */
+  a.card-offline {
+    pointer-events: none;
+    cursor: not-allowed;
+    opacity: 0.55;
+    filter: grayscale(0.4);
+  }
+  a.card-offline .launch-text { text-decoration: line-through; }
+
+  /* Live "online" dot beside the version string for healthy LOCAL apps */
+  .live-dot {
+    display: inline-block;
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #33fb0a;
+    box-shadow: 0 0 6px #33fb0a;
+    margin-right: 6px;
+    animation: livePulse 1.6s ease-in-out infinite;
+    vertical-align: middle;
+  }
+  @keyframes livePulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+  }
+
+  /* Search bar + filter chip row */
+  .lc-search {
+    background: rgba(0,0,0,0.55);
+    border: 1px solid rgba(0,240,255,0.25);
+    color: #e5e1e4;
+    font-family: 'Space Grotesk', sans-serif;
+    letter-spacing: 0.08em;
+    padding: 10px 14px 10px 36px;
+    border-radius: 4px;
+    width: 100%;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  .lc-search::placeholder { color: rgba(255,255,255,0.3); letter-spacing: 0.18em; text-transform: uppercase; font-size: 11px; }
+  .lc-search:focus { border-color: #00f0ff; box-shadow: 0 0 12px rgba(0,240,255,0.25); }
+
+  .lc-chip {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    border-radius: 3px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.04);
+    color: rgba(255,255,255,0.55);
+    cursor: pointer;
+    transition: all .15s ease;
+    white-space: nowrap;
+  }
+  .lc-chip:hover { border-color: rgba(0,240,255,0.4); color: #dbfcff; }
+  .lc-chip.active {
+    background: rgba(0,240,255,0.15);
+    border-color: #00f0ff;
+    color: #00f0ff;
+    box-shadow: 0 0 8px rgba(0,240,255,0.2);
+  }
+  .lc-chip-count {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 1px 6px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.08);
+    font-size: 9px;
+    font-weight: 700;
+  }
+  .lc-chip.active .lc-chip-count { background: rgba(0,0,0,0.3); color: #00f0ff; }
+
+  /* Empty state */
+  .lc-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 4rem 1rem;
+    border: 1px dashed rgba(255,255,255,0.1);
+    border-radius: 6px;
+    color: rgba(255,255,255,0.45);
+    font-family: 'Space Grotesk', sans-serif;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-size: 12px;
+  }
+
+  /* Sticky featured card on mobile only */
+  @media (max-width: 767px) {
+    a.card-featured-mobile {
+      position: sticky;
+      top: 70px; /* below the sticky header */
+      z-index: 20;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.7), 0 0 24px rgba(0,240,255,0.25);
+    }
+  }
+
+  /* Compact card variant on small screens — drop the car sprite, shrink height */
+  @media (max-width: 639px) {
+    a.card-glow {
+      height: 200px !important;
+    }
+    .card-car { display: none; }
+    /* Hide the giant decorative corner number on mobile too */
+    .card-cornern { display: none; }
+  }
+
+  /* Cmd-K hint */
+  .lc-cmdk-hint {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Space Grotesk', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    color: rgba(255,255,255,0.3);
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(0,0,0,0.4);
+    padding: 2px 6px;
+    border-radius: 3px;
+    pointer-events: none;
+  }
 </style>
 </head>
 <body class="text-on-background min-h-screen flex flex-col font-['Inter'] text-[15px] relative">
@@ -189,6 +327,16 @@ tailwind.config = {
     <p class="font-label-caps text-label-caps text-primary-container tracking-[0.3em] opacity-80">アプリケーションを選択</p>
   </div>
 
+  <!-- Search + filter chips -->
+  <div class="flex flex-col gap-3">
+    <div class="relative">
+      <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-cyan-400/70 text-base pointer-events-none">search</span>
+      <input id="lcSearch" type="text" class="lc-search" placeholder="Search apps · name, kanji, version" autocomplete="off" aria-label="Search applications">
+      <span class="lc-cmdk-hint hidden md:block" id="lcCmdkHint">⌘K</span>
+    </div>
+    <div id="lcFilterChips" class="flex flex-wrap gap-2"></div>
+  </div>
+
   <!-- App Grid -->
   <div id="appGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-gutter"></div>
 
@@ -207,34 +355,48 @@ tailwind.config = {
 </footer>
 
 <script>
+const GH_OWNER = 'dyap123';
+
+// Each app: 'repo' is the GitHub repo slug (used for live commit-time lookup).
+// 'last' kept as fallback string until the GitHub API responds (or for apps
+// without a public repo). LOCAL apps use port-pings, not GitHub.
 const APPS = [
   { n: '01', name: 'Command Center', jp: '指令室', icon: 'speed', car: '42.png',
     desc: 'Live construction dashboard — Alfred AI, embed tracking, pour lookahead, project health radar.',
-    url: 'https://dyap123.github.io/openyap-cc/', status: 'ONLINE', version: 'CMD-4.2.1', last: '12H AGO', featured: true },
+    url: 'https://dyap123.github.io/openyap-cc/', repo: 'openyap-cc',
+    status: 'ONLINE', version: 'CMD-4.2.1', last: '—', featured: true },
   { n: '02', name: 'CUP Dashboard', jp: '打設管理', icon: 'dashboard', car: '55.png',
     desc: 'Pour tracking, live pours via Firebase, embed checklists, footing maps, day log management.',
-    url: 'https://dyap123.github.io/cup-dashboard/', status: 'ONLINE', version: 'PUR-2.8.0', last: '2H AGO' },
+    url: 'https://dyap123.github.io/cup-dashboard/', repo: 'cup-dashboard',
+    status: 'ONLINE', version: 'PUR-2.8.0', last: '—' },
   { n: '03', name: 'Todo', jp: 'タスク管理', icon: 'checklist', car: '1.png',
     desc: 'Firebase task manager with RFIs tab, Sisyphus chart, Alfred brain, and satisfying completion chirp.',
-    url: 'https://dyap123.github.io/openyap-todo/', status: 'ONLINE', version: 'TSK-3.1.0', last: '5M AGO' },
+    url: 'https://dyap123.github.io/openyap-todo/', repo: 'openyap-todo',
+    status: 'ONLINE', version: 'TSK-3.1.0', last: '—' },
   { n: '04', name: 'Formwork', jp: '予算管理', icon: 'view_in_ar', car: '5.png',
     desc: 'Budget intelligence — line items, Compare view, 3D lattice, burn rate, runway. Excel export.',
-    url: 'https://dyap123.github.io/openyap-budget/', status: 'ONLINE', version: 'FWK-2.0.0', last: '1D AGO' },
+    url: 'https://dyap123.github.io/openyap-budget/', repo: 'openyap-budget',
+    status: 'ONLINE', version: 'FWK-2.0.0', last: '—' },
   { n: '05', name: 'Roadmap', jp: 'ロードマップ', icon: 'map', car: '150.png',
     desc: 'Business roadmap — 3D construction site, scroll-driven building, financials, WebGL shader bg.',
-    url: 'https://dyap123.github.io/openyap-roadmap/', status: 'ONLINE', version: 'MAP-2.1.0', last: '5H AGO' },
+    url: 'https://dyap123.github.io/openyap-roadmap/', repo: 'openyap-roadmap',
+    status: 'ONLINE', version: 'MAP-2.1.0', last: '—' },
   { n: '06', name: 'Roadmap · Stitch', jp: 'ロードマップ 試', icon: 'auto_awesome', car: '150.png',
     desc: 'Stitch-inspired restyle — neon wireframe building, Space Grotesk display, gradient border cards.',
-    url: 'https://dyap123.github.io/openyap-roadmap/variant.html', status: 'UPDATE', version: 'MAP-V.BETA', last: '2D AGO' },
+    url: 'https://dyap123.github.io/openyap-roadmap/variant.html', repo: 'openyap-roadmap',
+    status: 'UPDATE', version: 'MAP-V.BETA', last: '—' },
   { n: '07', name: 'Dashboard', jp: 'ダッシュボード', icon: 'space_dashboard', car: '88.png',
     desc: 'General OpenYap project dashboard — light/dark theme toggle and overview metrics.',
-    url: 'https://dyap123.github.io/openyap-dashboard/', status: 'ONLINE', version: 'DSH-1.2.0', last: '1W AGO' },
+    url: 'https://dyap123.github.io/openyap-dashboard/', repo: 'openyap-dashboard',
+    status: 'ONLINE', version: 'DSH-1.2.0', last: '—' },
   { n: '08', name: 'Family Trip', jp: '家族旅行', icon: 'flight_takeoff', car: '10.png',
     desc: 'California trip PWA — 21-person Singapore family. Schedule, logistics, food, budget.',
-    url: 'https://dyap123.github.io/yap-family-trip/', status: 'ONLINE', version: 'TRP-1.0.3', last: '2D AGO' },
+    url: 'https://dyap123.github.io/yap-family-trip/', repo: 'yap-family-trip',
+    status: 'ONLINE', version: 'TRP-1.0.3', last: '—' },
   { n: '09', name: 'Portfolio', jp: 'ポートフォリオ', icon: 'badge', car: '120.png',
     desc: 'Professional portfolio — OpenYap projects, construction field work, technical skills.',
-    url: 'https://dyap123.github.io/portfolio/', status: 'ONLINE', version: 'PRT-1.0.0', last: '3D AGO' },
+    url: 'https://dyap123.github.io/portfolio/', repo: 'portfolio',
+    status: 'ONLINE', version: 'PRT-1.0.0', last: '—' },
   { n: '10', name: 'Const Agent', jp: '建設AI', icon: 'smart_toy', car: '120.png',
     desc: 'AI construction PM with Alfred, agent pipeline, tool tracker, advisory team, web UI. Port 8484.',
     url: 'https://localhost:8484', status: 'LOCAL', version: 'AGT-4.7.0', last: 'NOW' },
@@ -287,21 +449,39 @@ function statusStyle(status){
   };
 }
 
+// ── OFFLINE status style branch (mirrors statusStyle shape) ─────────────
+function statusStyleOffline(){
+  return {
+    bg: 'bg-surface-bright', text: 'text-outline', border: 'border-outline/40',
+    iconBox: 'bg-surface-bright border-outline/30',
+    iconColor: 'text-outline',
+    btnBorder: 'border-outline', btnText: 'text-outline',
+    btnHoverBg: '',
+    stripBorder: 'border-surface-bright', stripColor: 'text-outline'
+  };
+}
+
+// ── Card renderer ──────────────────────────────────────────────────────
 function renderCard(app){
-  const s = statusStyle(app.status);
-  const featuredRing = app.featured ? 'neon-border' : `border ${app.status === 'ONLINE' ? 'border-primary-container/30' : 'border-surface-bright'}`;
+  const effStatus = app.liveStatus || app.status;
+  const s = effStatus === 'OFFLINE' ? statusStyleOffline() : statusStyle(effStatus);
+  const featuredRing = app.featured ? 'neon-border' : `border ${effStatus === 'ONLINE' ? 'border-primary-container/30' : 'border-surface-bright'}`;
+  const offlineCls = effStatus === 'OFFLINE' ? 'card-offline' : '';
+  const featuredMobileCls = app.featured ? 'card-featured-mobile' : '';
+  const lastStr = app.liveLast || app.last || '—';
+  const liveDot = effStatus === 'LOCAL' && app.liveStatus === 'LOCAL' ? '<span class="live-dot" aria-hidden="true"></span>' : '';
   return `
-    <a href="${app.url}" target="_blank" class="carbon-panel hud-glass ${featuredRing} rounded flex flex-col justify-between h-[280px] p-panel-padding card-glow relative group overflow-hidden transition-all no-underline">
+    <a href="${app.url}" target="_blank" data-app-id="${app.n}" class="carbon-panel hud-glass ${featuredRing} ${offlineCls} ${featuredMobileCls} rounded flex flex-col justify-between h-[280px] p-panel-padding card-glow relative group overflow-hidden transition-all no-underline">
       <!-- corner number -->
-      <div class="absolute -right-6 -bottom-8 text-[110px] font-black text-white/[0.04] italic pointer-events-none group-hover:text-primary-container/[0.08] transition-colors select-none">${app.n}</div>
+      <div class="card-cornern absolute -right-6 -bottom-8 text-[110px] font-black text-white/[0.04] italic pointer-events-none group-hover:text-primary-container/[0.08] transition-colors select-none">${app.n}</div>
       <!-- car sprite -->
-      <img src="cars/${app.car}" class="card-car" alt="">
+      <img src="cars/${app.car}" class="card-car" alt="" loading="lazy">
       <!-- top row -->
       <div class="flex justify-between items-start z-10 relative">
         <div class="p-3 rounded border ${s.iconBox}">
           <span class="material-symbols-outlined text-3xl ${s.iconColor}" style="font-variation-settings:'FILL' 1;">${app.icon}</span>
         </div>
-        <span class="chip-skew ${s.bg} ${s.text} font-label-caps text-label-caps px-3 py-1 rounded-sm"><span>${app.status}</span></span>
+        <span class="chip-skew ${s.bg} ${s.text} font-label-caps text-label-caps px-3 py-1 rounded-sm"><span>${effStatus}</span></span>
       </div>
       <!-- body -->
       <div class="z-10 mt-auto relative">
@@ -309,20 +489,218 @@ function renderCard(app){
         <p class="font-data-mono text-[10px] tracking-[0.25em] mb-2 ${s.iconColor} opacity-70">${app.jp}</p>
         <p class="text-[12px] leading-snug text-outline mb-4 clamp-2">${app.desc}</p>
         <div class="btn-dual-tone w-full border ${s.btnBorder} ${s.btnText} font-label-caps text-label-caps py-3 tracking-[0.2em] uppercase bg-surface-container-low flex justify-center items-center gap-2 ${s.btnHoverBg}">
-          LAUNCH <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+          <span class="launch-text">${effStatus === 'OFFLINE' ? 'OFFLINE — START LOCALLY' : 'LAUNCH'}</span>
+          <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
         </div>
       </div>
       <!-- telemetry strip -->
       <div class="absolute bottom-0 left-0 w-full bg-black/60 border-t ${s.stripBorder} py-1 px-3 flex justify-between items-center font-data-mono text-[9px] ${s.stripColor}">
-        <span>${app.version}</span>
-        <span>LAST: ${app.last}</span>
+        <span>${liveDot}${app.version}</span>
+        <span>LAST: ${lastStr}</span>
       </div>
     </a>`;
 }
 
-document.getElementById('appGrid').innerHTML = APPS.map(renderCard).join('');
+// ── State for filtering ────────────────────────────────────────────────
+const STATE = {
+  query: '',
+  statusFilter: 'ALL', // ALL | ONLINE | UPDATE | LOCAL | OFFLINE
+};
 
-// Live clock in footer
+function effectiveStatus(app) { return app.liveStatus || app.status; }
+
+function visibleApps() {
+  const q = STATE.query.trim().toLowerCase();
+  return APPS.filter(app => {
+    if (STATE.statusFilter !== 'ALL' && effectiveStatus(app) !== STATE.statusFilter) return false;
+    if (!q) return true;
+    const hay = [app.name, app.jp, app.desc, app.version, app.n].join(' ').toLowerCase();
+    return q.split(/\s+/).every(tok => hay.includes(tok));
+  });
+}
+
+function renderGrid() {
+  const grid = document.getElementById('appGrid');
+  const apps = visibleApps();
+  if (!apps.length) {
+    grid.innerHTML = `<div class="lc-empty">No apps match — clear filters or try a different term</div>`;
+  } else {
+    grid.innerHTML = apps.map(renderCard).join('');
+  }
+  // Update chip counts (recompute against full list, ignoring search query is fine — counts reflect status partition)
+  document.querySelectorAll('#lcFilterChips .lc-chip').forEach(chip => {
+    const k = chip.dataset.status;
+    const count = k === 'ALL' ? APPS.length : APPS.filter(a => effectiveStatus(a) === k).length;
+    const cEl = chip.querySelector('.lc-chip-count');
+    if (cEl) cEl.textContent = count;
+  });
+}
+
+function renderChips() {
+  const chips = ['ALL', 'ONLINE', 'UPDATE', 'LOCAL', 'OFFLINE'];
+  const wrap = document.getElementById('lcFilterChips');
+  wrap.innerHTML = chips.map(k => {
+    const count = k === 'ALL' ? APPS.length : APPS.filter(a => effectiveStatus(a) === k).length;
+    const active = STATE.statusFilter === k ? 'active' : '';
+    return `<button class="lc-chip ${active}" data-status="${k}">${k}<span class="lc-chip-count">${count}</span></button>`;
+  }).join('');
+  wrap.querySelectorAll('.lc-chip').forEach(btn => {
+    btn.addEventListener('click', () => {
+      STATE.statusFilter = btn.dataset.status;
+      renderChips();
+      renderGrid();
+    });
+  });
+}
+
+// ── Relative time helper ───────────────────────────────────────────────
+function relativeTime(iso) {
+  if (!iso) return '—';
+  const ms = Date.now() - new Date(iso).getTime();
+  if (isNaN(ms) || ms < 0) return '—';
+  const s = Math.round(ms / 1000);
+  if (s < 60) return 'just now';
+  const m = Math.round(s / 60);
+  if (m < 60) return m + 'M AGO';
+  const h = Math.round(m / 60);
+  if (h < 24) return h + 'H AGO';
+  const d = Math.round(h / 24);
+  if (d < 30) return d + 'D AGO';
+  const mo = Math.round(d / 30);
+  if (mo < 12) return mo + 'MO AGO';
+  return Math.round(mo / 12) + 'Y AGO';
+}
+
+// ── GitHub commit-time fetcher with localStorage cache ────────────────
+const CACHE_TTL_MS = 30 * 60 * 1000; // 30 min
+function cacheKey(repo) { return 'lc_repo_lastcommit:' + repo; }
+
+function readCachedCommit(repo) {
+  try {
+    const raw = localStorage.getItem(cacheKey(repo));
+    if (!raw) return null;
+    const obj = JSON.parse(raw);
+    if (!obj || !obj.iso || !obj.fetchedAt) return null;
+    if (Date.now() - obj.fetchedAt > CACHE_TTL_MS) return obj; // stale but usable as fallback
+    return obj;
+  } catch (_) { return null; }
+}
+
+function writeCachedCommit(repo, iso) {
+  try {
+    localStorage.setItem(cacheKey(repo), JSON.stringify({ iso, fetchedAt: Date.now() }));
+  } catch (_) {}
+}
+
+async function fetchLatestCommit(repo) {
+  const cached = readCachedCommit(repo);
+  // If fresh (within TTL), use cache
+  if (cached && (Date.now() - cached.fetchedAt < CACHE_TTL_MS)) return cached.iso;
+  try {
+    const r = await fetch(`https://api.github.com/repos/${GH_OWNER}/${repo}/commits?per_page=1`);
+    if (!r.ok) throw new Error('http ' + r.status);
+    const arr = await r.json();
+    const iso = arr[0] && arr[0].commit && (arr[0].commit.committer || arr[0].commit.author || {}).date;
+    if (!iso) throw new Error('no commit date');
+    writeCachedCommit(repo, iso);
+    return iso;
+  } catch (err) {
+    // Fall back to stale cache if we have it
+    return cached ? cached.iso : null;
+  }
+}
+
+async function refreshAllTimestamps() {
+  // Hydrate from cache synchronously first so the grid never flashes "—"
+  for (const app of APPS) {
+    if (!app.repo) continue;
+    const cached = readCachedCommit(app.repo);
+    if (cached) app.liveLast = relativeTime(cached.iso);
+  }
+  renderGrid();
+  // Then kick off network refreshes in parallel
+  await Promise.all(APPS.filter(a => a.repo).map(async (app) => {
+    const iso = await fetchLatestCommit(app.repo);
+    if (iso) app.liveLast = relativeTime(iso);
+  }));
+  renderGrid();
+}
+
+// ── Localhost ping for LOCAL apps ─────────────────────────────────────
+async function pingApp(app) {
+  if (app.status !== 'LOCAL') return;
+  if (!/^https?:\/\/localhost/i.test(app.url)) {
+    // Non-URL local entries (Cost Codes uses a relative file path) — assume fine
+    app.liveStatus = 'LOCAL';
+    return;
+  }
+  try {
+    const ctrl = (typeof AbortSignal !== 'undefined' && AbortSignal.timeout)
+      ? AbortSignal.timeout(1500)
+      : (() => { const c = new AbortController(); setTimeout(() => c.abort(), 1500); return c.signal; })();
+    await fetch(app.url, { mode: 'no-cors', signal: ctrl, cache: 'no-store' });
+    app.liveStatus = 'LOCAL';
+  } catch (_) {
+    app.liveStatus = 'OFFLINE';
+  }
+}
+
+async function refreshAllPings() {
+  await Promise.all(APPS.filter(a => a.status === 'LOCAL').map(pingApp));
+  renderChips();
+  renderGrid();
+}
+
+// ── Boot ──────────────────────────────────────────────────────────────
+renderChips();
+renderGrid();
+refreshAllTimestamps();
+refreshAllPings();
+
+// Re-ping every 30s while the tab is visible
+let pingTimer = null;
+function startPingLoop() {
+  if (pingTimer) return;
+  pingTimer = setInterval(() => {
+    if (document.visibilityState === 'visible') refreshAllPings();
+  }, 30000);
+}
+function stopPingLoop() {
+  if (pingTimer) { clearInterval(pingTimer); pingTimer = null; }
+}
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') {
+    refreshAllPings();
+    startPingLoop();
+  } else {
+    stopPingLoop();
+  }
+});
+startPingLoop();
+
+// ── Search wiring + Cmd-K hotkey ──────────────────────────────────────
+const searchInput = document.getElementById('lcSearch');
+searchInput.addEventListener('input', (e) => {
+  STATE.query = e.target.value;
+  renderGrid();
+});
+searchInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    e.target.value = '';
+    STATE.query = '';
+    renderGrid();
+    e.target.blur();
+  }
+});
+document.addEventListener('keydown', (e) => {
+  if ((e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K')) {
+    e.preventDefault();
+    searchInput.focus();
+    searchInput.select();
+  }
+});
+
+// ── Live clock in footer (preserved) ──────────────────────────────────
 function tickClock(){
   const el = document.getElementById('timeStrip');
   if(!el) return;
