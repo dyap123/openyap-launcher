@@ -627,8 +627,19 @@ async function refreshAllTimestamps() {
 }
 
 // ── Localhost ping for LOCAL apps ─────────────────────────────────────
+// When the launcher is loaded over https:// (i.e. dyap123.github.io),
+// browsers block http://localhost requests as mixed content — every ping
+// would fail and every LOCAL app would show OFFLINE even when it's running.
+// Detect that case once at boot and skip pings, leaving cards neutral.
+const PINGS_DISABLED = (typeof location !== 'undefined' && location.protocol === 'https:');
+
 async function pingApp(app) {
   if (app.status !== 'LOCAL') return;
+  if (PINGS_DISABLED) {
+    // Don't touch liveStatus — card falls back to its declared LOCAL pill
+    // without the green dot, so the user knows pings aren't running.
+    return;
+  }
   if (!/^https?:\/\/localhost/i.test(app.url)) {
     // Non-URL local entries (Cost Codes uses a relative file path) — assume fine
     app.liveStatus = 'LOCAL';
