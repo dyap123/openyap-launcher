@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>OpenYap Diagnostics · Wangan OS</title>
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="cars/20.png">
+<script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Space+Grotesk:wght@400;500;700;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script>
+tailwind.config = {
+  darkMode: "class",
+  theme: { extend: {
+    colors: {
+      "outline": "#849495",
+      "primary": "#dbfcff",
+      "primary-container": "#00f0ff",
+      "secondary-container": "#ff4b89",
+      "tertiary-container": "#33fb0a",
+      "surface": "#131315",
+      "surface-container-low": "#1b1b1d",
+      "on-background": "#e5e1e4",
+    }
+  }}
+}
+</script>
+<style>
+  body {
+    background-color: #000000;
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(0,240,255,0.03) 1px, rgba(0,240,255,0.03) 2px),
+      repeating-linear-gradient(90deg, transparent, transparent 1px, rgba(0,240,255,0.03) 1px, rgba(0,240,255,0.03) 2px);
+    background-size: 64px 64px;
+    min-height: 100vh;
+  }
+  .carbon-panel {
+    background-color: #1A1A1D;
+    background-image:
+      repeating-linear-gradient(45deg, rgba(255,255,255,0.02) 0, rgba(255,255,255,0.02) 2px, transparent 2px, transparent 4px),
+      repeating-linear-gradient(135deg, rgba(255,255,255,0.02) 0, rgba(255,255,255,0.02) 2px, transparent 2px, transparent 4px);
+  }
+  .hud-glass {
+    background: rgba(26,26,29,0.72);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+  .chip-skew { transform: skew(-15deg); }
+  .chip-skew > span { display: inline-block; transform: skew(15deg); }
+  .neon-border {
+    box-shadow: 0 0 10px rgba(0,240,255,0.3), inset 0 0 5px rgba(0,240,255,0.2);
+    border: 1px solid rgba(0,240,255,0.5);
+  }
+  .live-dot {
+    display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+    background: #33fb0a; box-shadow: 0 0 6px #33fb0a;
+    animation: livePulse 1.6s ease-in-out infinite;
+  }
+  @keyframes livePulse { 0%,100%{opacity:.5} 50%{opacity:1} }
+
+  /* Sortable table */
+  .diag-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+  .diag-table thead th {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase;
+    color: rgba(0,240,255,0.65);
+    padding: 12px 14px;
+    border-bottom: 1px solid rgba(0,240,255,0.18);
+    background: rgba(11,12,17,0.6);
+    text-align: left; user-select: none;
+    position: sticky; top: 0; z-index: 5;
+  }
+  .diag-table thead th.sortable { cursor: pointer; }
+  .diag-table thead th.sortable:hover { color: #00f0ff; background: rgba(0,240,255,0.05); }
+  .diag-table thead th .sort-arrow { opacity: 0.35; margin-left: 4px; font-size: 10px; }
+  .diag-table thead th.sort-active .sort-arrow { opacity: 1; color: #00f0ff; }
+  .diag-table tbody tr {
+    transition: background .15s;
+  }
+  .diag-table tbody tr:hover { background: rgba(0,240,255,0.04); }
+  .diag-table tbody td {
+    padding: 12px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 12px; color: #cbcbd0;
+    vertical-align: middle;
+  }
+  .diag-table tbody td.col-name {
+    font-weight: 700; font-size: 13px; color: #fff;
+    letter-spacing: -0.01em;
+  }
+  .diag-table tbody td.col-name .sub { font-size: 10px; color: rgba(0,240,255,0.55); letter-spacing: 0.18em; text-transform: uppercase; font-weight: 600; }
+  .diag-table tbody td.col-msg {
+    color: rgba(255,255,255,0.55);
+    max-width: 320px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    font-size: 11.5px;
+  }
+  .diag-table tbody td.col-time { font-family: 'Space Grotesk', monospace; color: rgba(0,240,255,0.7); font-weight: 600; letter-spacing: 0.1em; font-size: 11px; text-transform: uppercase; white-space: nowrap; }
+  .diag-table tbody td.col-sha { font-family: 'Space Grotesk', monospace; font-size: 10.5px; color: rgba(255,255,255,0.4); }
+  .diag-table tbody td a { color: rgba(0,240,255,0.7); }
+  .diag-table tbody td a:hover { color: #00f0ff; text-decoration: underline; }
+  .diag-table tbody tr.row-offline { opacity: 0.45; filter: grayscale(0.5); }
+
+  /* Status pill (re-used from launcher style) */
+  .pill {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 9.5px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+    padding: 3px 9px;
+    transform: skew(-12deg);
+    display: inline-block;
+  }
+  .pill > span { display: inline-block; transform: skew(12deg); }
+  .pill-online { background: #00f0ff; color: #000; }
+  .pill-update { background: #ff4b89; color: #000; }
+  .pill-local  { background: #33fb0a; color: #000; }
+  .pill-offline{ background: rgba(132,148,149,0.5); color: rgba(255,255,255,0.7); border: 1px solid rgba(132,148,149,0.6); }
+  .pill-loading{ background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.4); }
+
+  /* KPI tiles */
+  .kpi-tile {
+    background: rgba(11,12,17,0.72);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(0,240,255,0.15);
+    padding: 14px 18px;
+    /* HUD chamfer */
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+  }
+  .kpi-tile .lbl {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.22em;
+    text-transform: uppercase; color: rgba(0,240,255,0.6);
+    margin-bottom: 6px;
+  }
+  .kpi-tile .val {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 28px; font-weight: 700; letter-spacing: -0.02em;
+    color: #fff; line-height: 1;
+  }
+  .kpi-tile .sub {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 10.5px; color: rgba(255,255,255,0.4);
+    margin-top: 4px; letter-spacing: 0.05em;
+  }
+
+  /* Refresh button */
+  .refresh-btn {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase;
+    padding: 9px 16px;
+    color: #00f0ff;
+    background: rgba(0,240,255,0.08);
+    border: 1px solid rgba(0,240,255,0.4);
+    cursor: pointer;
+    transition: all .2s ease;
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+  }
+  .refresh-btn:hover { background: rgba(0,240,255,0.18); }
+  .refresh-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .refresh-btn .spinner { display: inline-block; transition: transform .4s; }
+  .refresh-btn.is-loading .spinner { animation: spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .health-bar {
+    display: inline-flex; gap: 2px; vertical-align: middle;
+  }
+  .health-bar span {
+    display: inline-block;
+    width: 5px; height: 14px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 1px;
+  }
+  .health-bar span.on { background: #00f0ff; box-shadow: 0 0 4px #00f0ff; }
+</style>
+</head>
+<body class="text-on-background min-h-screen flex flex-col font-['Inter'] text-[15px] relative">
+
+<div class="fixed top-0 right-0 w-[800px] h-full pointer-events-none z-[-1]" style="background:radial-gradient(circle at right center, rgba(0,240,255,0.10) 0%, transparent 60%)"></div>
+
+<!-- Top nav -->
+<header class="bg-black/90 backdrop-blur-xl border-b-2 border-cyan-500/30 shadow-[0_4px_20px_rgba(0,0,0,0.9)] flex justify-between items-center w-full px-6 py-3 z-50 sticky top-0">
+  <div class="flex items-center gap-4">
+    <a href="index.html" class="flex items-center gap-3">
+      <img src="cars/20.png" alt="" class="h-7 w-auto" style="image-rendering:pixelated;filter:drop-shadow(0 0 6px rgba(0,240,255,0.5))">
+      <span class="text-2xl font-black italic tracking-widest text-cyan-400 drop-shadow-[0_0_8px_rgba(0,240,255,0.6)] font-['Space_Grotesk']">OPENYAP</span>
+    </a>
+    <div class="h-6 w-px bg-cyan-900/50 mx-2"></div>
+    <nav class="hidden md:flex gap-4">
+      <a class="text-zinc-500 hover:text-cyan-300 transition-colors font-['Space_Grotesk'] tracking-tighter uppercase text-sm px-2" href="index.html">Dashboard</a>
+      <a class="text-zinc-500 hover:text-cyan-300 transition-colors font-['Space_Grotesk'] tracking-tighter uppercase text-sm px-2" href="https://github.com/dyap123" target="_blank">Tuning</a>
+      <a class="text-cyan-400 border-b-2 border-cyan-400 pb-1 font-bold transition-all font-['Space_Grotesk'] tracking-tighter uppercase text-sm" href="#">Diagnostics</a>
+    </nav>
+  </div>
+  <div class="flex items-center gap-2">
+    <span class="hidden md:inline text-[10px] font-mono text-cyan-500/60 tracking-[0.2em] uppercase mr-3">// FLEET HEALTH MONITOR</span>
+    <button id="refreshBtn" class="refresh-btn">
+      <span class="spinner inline-block">↻</span>
+      <span class="ml-1">Refresh</span>
+    </button>
+  </div>
+</header>
+
+<main class="flex-grow container mx-auto px-6 py-8 relative z-10 flex flex-col gap-8 pb-20">
+
+  <!-- Header strip -->
+  <div class="flex items-end justify-between gap-4">
+    <div class="flex flex-col gap-2 border-l-4 border-primary-container pl-4 relative">
+      <div class="absolute -left-[4px] top-0 h-1/2 w-1 bg-white opacity-50"></div>
+      <h2 class="font-['Space_Grotesk'] text-[44px] leading-none font-black uppercase italic tracking-tighter text-on-background">Fleet Diagnostics</h2>
+      <p class="font-['Space_Grotesk'] text-[11px] tracking-[0.3em] uppercase opacity-80 text-primary-container">診断 · ALL SYSTEMS · MONITOR</p>
+    </div>
+    <div class="hidden md:block text-right">
+      <div class="text-[10px] tracking-[0.2em] uppercase text-zinc-500 font-mono">Last refreshed</div>
+      <div class="text-sm tracking-wider text-cyan-400 font-mono mt-1" id="lastRefreshed">—</div>
+    </div>
+  </div>
+
+  <!-- KPI tiles -->
+  <div id="kpiRow" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
+
+  <!-- Filter strip -->
+  <div class="flex items-center gap-2">
+    <span class="text-[10px] tracking-[0.22em] uppercase text-cyan-500/60 font-bold mr-2">Filter</span>
+    <div id="filterChips" class="flex flex-wrap gap-2"></div>
+  </div>
+
+  <!-- Apps table -->
+  <div class="hud-glass border border-cyan-500/15 rounded overflow-x-auto" style="clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 0 100%);">
+    <table class="diag-table">
+      <thead>
+        <tr id="tableHead">
+          <th class="sortable" data-sort="n">#<span class="sort-arrow">↕</span></th>
+          <th class="sortable" data-sort="name">App<span class="sort-arrow">↕</span></th>
+          <th>Status</th>
+          <th class="sortable" data-sort="size">Repo Size<span class="sort-arrow">↕</span></th>
+          <th class="sortable sort-active" data-sort="committedAt">Last Commit<span class="sort-arrow">▼</span></th>
+          <th>Author</th>
+          <th>Message</th>
+          <th>SHA</th>
+          <th>Health (30d)</th>
+          <th>Open</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+
+  <!-- Footer note -->
+  <div class="text-[10px] tracking-[0.2em] uppercase text-zinc-600 text-center font-mono">
+    Data sourced live from the GitHub REST API · cached 30 min in localStorage · unauthenticated rate-limit 60 req/hr per IP
+  </div>
+
+</main>
+
+<footer class="fixed bottom-0 left-0 w-full z-50 flex justify-between items-center px-6 py-2 border-t border-cyan-500/20 bg-gradient-to-r from-black via-zinc-950 to-black backdrop-blur-md">
+  <span class="text-pink-500 font-black font-mono text-[10px] uppercase tracking-[0.2em]">SYSTEM_STATUS: <span id="overallStatus">SCANNING…</span></span>
+  <div class="hidden md:flex gap-6">
+    <span class="text-zinc-600 font-mono text-[10px] uppercase tracking-[0.2em]" id="timeStrip">LOCAL_TIME: --:--</span>
+    <span class="text-zinc-600 font-mono text-[10px] uppercase tracking-[0.2em]">DRIVER: D.YAP</span>
+  </div>
+</footer>
+
+<script>
+const GH_OWNER = 'dyap123';
+const APPS = [
+  { n: '01', name: 'Command Center', kanji: '指令室', url: 'https://dyap123.github.io/openyap-cc/', repo: 'openyap-cc', status: 'ONLINE' },
+  { n: '02', name: 'CUP Dashboard',  kanji: '打設管理', url: 'https://dyap123.github.io/cup-dashboard/', repo: 'cup-dashboard', status: 'ONLINE' },
+  { n: '03', name: 'Todo',           kanji: 'タスク管理', url: 'https://dyap123.github.io/openyap-todo/', repo: 'openyap-todo', status: 'ONLINE' },
+  { n: '04', name: 'Formwork',       kanji: '予算管理', url: 'https://dyap123.github.io/openyap-budget/', repo: 'openyap-budget', status: 'ONLINE' },
+  { n: '05', name: 'Roadmap',        kanji: 'ロードマップ', url: 'https://dyap123.github.io/openyap-roadmap/', repo: 'openyap-roadmap', status: 'ONLINE' },
+  { n: '06', name: 'Roadmap · Stitch',kanji: 'ロードマップ 試', url: 'https://dyap123.github.io/openyap-roadmap/variant.html', repo: 'openyap-roadmap', status: 'UPDATE' },
+  { n: '07', name: 'Dashboard',      kanji: 'ダッシュボード', url: 'https://dyap123.github.io/openyap-dashboard/', repo: 'openyap-dashboard', status: 'ONLINE' },
+  { n: '08', name: 'Family Trip',    kanji: '家族旅行', url: 'https://dyap123.github.io/yap-family-trip/', repo: 'yap-family-trip', status: 'ONLINE' },
+  { n: '09', name: 'Portfolio',      kanji: 'ポートフォリオ', url: 'https://dyap123.github.io/portfolio/', repo: 'portfolio', status: 'ONLINE' },
+  { n: '10', name: 'Const Agent',    kanji: '建設AI', url: 'https://localhost:8484', status: 'LOCAL' },
+  { n: '11', name: 'Vault Brain',    kanji: '知識庫', url: 'http://localhost:8889', status: 'LOCAL' },
+  { n: '12', name: 'Hand Lab',       kanji: '手の実験室', url: 'http://localhost:8891', status: 'LOCAL' },
+  { n: '13', name: 'Social',         kanji: 'ソーシャル', url: 'http://localhost:3000', status: 'LOCAL' },
+  { n: '14', name: 'Cost Codes',     kanji: 'コスト表', url: '../cost-codes/foreman-cost-codes.html', status: 'LOCAL' },
+];
+
+// Mutable per-app diagnostic data (filled by GitHub fetches)
+const D = APPS.map(a => ({ ...a, repoSize: null, lastCommit: null, lastMessage: null, lastAuthor: null, lastSha: null, committedAt: null, recentDays: [], commitsLast30d: 0, error: null, liveStatus: null }));
+const STATE = { sortKey: 'committedAt', sortDir: 'desc', filter: 'ALL' };
+const PINGS_DISABLED = (typeof location !== 'undefined' && location.protocol === 'https:');
+
+// ── Helpers ──────────────────────────────────────────────────────────
+const CACHE_TTL_MS = 30 * 60 * 1000;
+function cacheGet(key) {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return null;
+    const obj = JSON.parse(raw);
+    if (!obj || !obj.fetchedAt) return null;
+    return obj;
+  } catch { return null; }
+}
+function cacheSet(key, data) {
+  try { localStorage.setItem(key, JSON.stringify({ ...data, fetchedAt: Date.now() })); } catch {}
+}
+function isFresh(c) { return c && (Date.now() - c.fetchedAt < CACHE_TTL_MS); }
+
+function relativeTime(iso) {
+  if (!iso) return '—';
+  const ms = Date.now() - new Date(iso).getTime();
+  if (isNaN(ms) || ms < 0) return '—';
+  const s = Math.round(ms / 1000);
+  if (s < 60) return 'just now';
+  const m = Math.round(s / 60); if (m < 60) return m + 'M AGO';
+  const h = Math.round(m / 60); if (h < 24) return h + 'H AGO';
+  const d = Math.round(h / 24); if (d < 30) return d + 'D AGO';
+  const mo = Math.round(d / 30); if (mo < 12) return mo + 'MO AGO';
+  return Math.round(mo / 12) + 'Y AGO';
+}
+function formatBytes(n) {
+  if (n == null) return '—';
+  // GitHub returns size in KB
+  const kb = +n;
+  if (kb < 1024) return kb + ' KB';
+  if (kb < 1024 * 1024) return (kb / 1024).toFixed(1) + ' MB';
+  return (kb / 1024 / 1024).toFixed(2) + ' GB';
+}
+function shortSha(sha) { return sha ? sha.substring(0, 7) : '—'; }
+
+async function fetchRepoInfo(repo) {
+  const k = 'diag_repo:' + repo;
+  const cached = cacheGet(k);
+  if (isFresh(cached)) return cached;
+  try {
+    const r = await fetch(`https://api.github.com/repos/${GH_OWNER}/${repo}`);
+    if (!r.ok) throw new Error('http ' + r.status);
+    const j = await r.json();
+    const out = { size: j.size, default_branch: j.default_branch, pushed_at: j.pushed_at, open_issues: j.open_issues_count };
+    cacheSet(k, out);
+    return out;
+  } catch (e) {
+    return cached || { error: e.message };
+  }
+}
+async function fetchRecentCommits(repo) {
+  const k = 'diag_commits:' + repo;
+  const cached = cacheGet(k);
+  if (isFresh(cached)) return cached;
+  try {
+    const r = await fetch(`https://api.github.com/repos/${GH_OWNER}/${repo}/commits?per_page=30`);
+    if (!r.ok) throw new Error('http ' + r.status);
+    const arr = await r.json();
+    const out = {
+      latest: arr[0] ? {
+        sha: arr[0].sha,
+        message: (arr[0].commit?.message || '').split('\n')[0],
+        author: arr[0].commit?.author?.name || arr[0].author?.login || '—',
+        date: arr[0].commit?.committer?.date || arr[0].commit?.author?.date,
+      } : null,
+      // Days in last 30 with at least one commit
+      activeDays: (() => {
+        const days = new Set();
+        const cutoff = Date.now() - 30 * 24 * 3600 * 1000;
+        arr.forEach(c => {
+          const t = new Date(c.commit?.committer?.date || c.commit?.author?.date).getTime();
+          if (t > cutoff) days.add(new Date(t).toISOString().slice(0,10));
+        });
+        return [...days].sort();
+      })(),
+    };
+    out.commitsLast30d = arr.filter(c => {
+      const t = new Date(c.commit?.committer?.date || c.commit?.author?.date).getTime();
+      return t > Date.now() - 30 * 24 * 3600 * 1000;
+    }).length;
+    cacheSet(k, out);
+    return out;
+  } catch (e) {
+    return cached || { error: e.message };
+  }
+}
+
+async function pingLocal(app) {
+  if (PINGS_DISABLED) { app.liveStatus = null; return; }
+  if (!/^https?:\/\/localhost/i.test(app.url)) { app.liveStatus = 'LOCAL'; return; }
+  try {
+    const c = (typeof AbortSignal !== 'undefined' && AbortSignal.timeout) ? AbortSignal.timeout(1500)
+            : (() => { const a = new AbortController(); setTimeout(() => a.abort(), 1500); return a.signal; })();
+    await fetch(app.url, { mode: 'no-cors', signal: c, cache: 'no-store' });
+    app.liveStatus = 'LOCAL';
+  } catch { app.liveStatus = 'OFFLINE'; }
+}
+
+// ── Render ──────────────────────────────────────────────────────────
+function statusPill(s) {
+  if (s === 'ONLINE')  return '<span class="pill pill-online"><span>ONLINE</span></span>';
+  if (s === 'UPDATE')  return '<span class="pill pill-update"><span>UPDATE</span></span>';
+  if (s === 'LOCAL')   return '<span class="pill pill-local"><span>LOCAL</span></span>';
+  if (s === 'OFFLINE') return '<span class="pill pill-offline"><span>OFFLINE</span></span>';
+  return '<span class="pill pill-loading"><span>SCAN…</span></span>';
+}
+
+function renderHealthBar(activeDays) {
+  // 14-segment bar covering last 14 days; lit if there's commit activity
+  const today = new Date().toISOString().slice(0,10);
+  const segs = [];
+  for (let i = 13; i >= 0; i--) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    const key = d.toISOString().slice(0,10);
+    const on = activeDays && activeDays.includes(key);
+    segs.push(`<span class="${on?'on':''}" title="${key}${on?': committed':''}"></span>`);
+  }
+  return `<span class="health-bar">${segs.join('')}</span>`;
+}
+
+function effStatus(d) { return d.liveStatus || d.status; }
+
+function renderTable() {
+  let rows = [...D];
+  if (STATE.filter !== 'ALL') rows = rows.filter(d => effStatus(d) === STATE.filter);
+  rows.sort((a, b) => {
+    const k = STATE.sortKey;
+    const dir = STATE.sortDir === 'asc' ? 1 : -1;
+    let av = a[k], bv = b[k];
+    if (k === 'committedAt') { av = a.committedAt || 0; bv = b.committedAt || 0; }
+    if (k === 'size') { av = a.repoSize || 0; bv = b.repoSize || 0; }
+    if (k === 'name') { av = (a.name || '').toLowerCase(); bv = (b.name || '').toLowerCase(); }
+    if (k === 'n') { av = parseInt(a.n, 10); bv = parseInt(b.n, 10); }
+    return av < bv ? -1 * dir : av > bv ? 1 * dir : 0;
+  });
+
+  const body = document.getElementById('tableBody');
+  body.innerHTML = rows.map(d => {
+    const stat = effStatus(d);
+    const rowCls = stat === 'OFFLINE' ? 'row-offline' : '';
+    const link = d.repo ? `https://github.com/${GH_OWNER}/${d.repo}` : null;
+    const repoCell = d.error
+      ? '<span class="text-pink-400/60 text-[10px]">err: ' + d.error + '</span>'
+      : (d.repo ? `<a href="${link}" target="_blank">${d.repo}</a>` : '<span class="text-white/30">local</span>');
+    const liveDot = (stat === 'LOCAL' && d.liveStatus === 'LOCAL') ? '<span class="live-dot mr-2 align-middle"></span>' : '';
+    return `<tr class="${rowCls}">
+      <td class="font-mono text-[11px] text-cyan-400/60">${d.n}</td>
+      <td class="col-name">
+        <div>${liveDot}${d.name}</div>
+        <div class="sub">${d.kanji}</div>
+      </td>
+      <td>${statusPill(stat)}</td>
+      <td>${formatBytes(d.repoSize)}</td>
+      <td class="col-time">${relativeTime(d.committedAt)}</td>
+      <td>${d.lastAuthor || '—'}</td>
+      <td class="col-msg" title="${(d.lastMessage || '').replace(/"/g,'&quot;')}">${d.lastMessage || '—'}</td>
+      <td class="col-sha">${d.lastSha ? `<a href="${link}/commit/${d.lastSha}" target="_blank">${shortSha(d.lastSha)}</a>` : '—'}</td>
+      <td>${renderHealthBar(d.activeDays)}<span class="ml-2 text-[10px] text-cyan-400/60 font-mono">${d.commitsLast30d || 0}c</span></td>
+      <td>${d.url ? `<a href="${d.url}" target="_blank" class="text-cyan-400 hover:text-cyan-300"><span class="material-symbols-outlined text-base align-middle">open_in_new</span></a>` : '—'}</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderKPIs() {
+  const total = D.length;
+  const online = D.filter(d => effStatus(d) === 'ONLINE').length;
+  const local = D.filter(d => effStatus(d) === 'LOCAL').length;
+  const offline = D.filter(d => effStatus(d) === 'OFFLINE').length;
+  const update = D.filter(d => effStatus(d) === 'UPDATE').length;
+  const newest = D.filter(d => d.committedAt).sort((a,b) => b.committedAt - a.committedAt)[0];
+  const totalSize = D.reduce((s, d) => s + (d.repoSize || 0), 0);
+  const totalCommits30d = D.reduce((s, d) => s + (d.commitsLast30d || 0), 0);
+  const tiles = [
+    { lbl: 'Apps tracked', val: total, sub: `${online} online · ${update} update · ${local} local · ${offline} offline` },
+    { lbl: 'Latest commit', val: newest ? relativeTime(newest.committedAt) : '—', sub: newest ? newest.name : '—' },
+    { lbl: 'Commits · 30d', val: totalCommits30d, sub: 'across all apps' },
+    { lbl: 'Total repo size', val: formatBytes(totalSize), sub: 'public repos' },
+  ];
+  document.getElementById('kpiRow').innerHTML = tiles.map(t =>
+    `<div class="kpi-tile"><div class="lbl">${t.lbl}</div><div class="val">${t.val}</div><div class="sub">${t.sub}</div></div>`
+  ).join('');
+}
+
+function renderFilters() {
+  const opts = ['ALL', 'ONLINE', 'UPDATE', 'LOCAL', 'OFFLINE'];
+  const counts = {ALL: D.length};
+  D.forEach(d => { const s = effStatus(d); counts[s] = (counts[s] || 0) + 1; });
+  const wrap = document.getElementById('filterChips');
+  wrap.innerHTML = opts.map(o => {
+    const active = STATE.filter === o ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/50' : 'bg-white/5 text-white/45 border-white/10 hover:border-cyan-500/40 hover:text-cyan-300';
+    return `<button data-filter="${o}" class="font-['Space_Grotesk'] text-[10px] tracking-[0.22em] uppercase font-bold px-3 py-1.5 border rounded-sm transition-all ${active}">${o}<span class="ml-2 text-[9px] text-white/40">${counts[o] || 0}</span></button>`;
+  }).join('');
+  wrap.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+    STATE.filter = b.dataset.filter;
+    renderFilters(); renderTable();
+  }));
+}
+
+// ── Boot ─────────────────────────────────────────────────────────────
+async function loadAll() {
+  const btn = document.getElementById('refreshBtn');
+  btn.classList.add('is-loading');
+  btn.disabled = true;
+  // Hydrate from cache first so the table doesn't flash empty
+  D.forEach(d => {
+    if (!d.repo) return;
+    const r = cacheGet('diag_repo:' + d.repo);
+    if (r) { d.repoSize = r.size; }
+    const c = cacheGet('diag_commits:' + d.repo);
+    if (c && c.latest) {
+      d.lastSha = c.latest.sha;
+      d.lastMessage = c.latest.message;
+      d.lastAuthor = c.latest.author;
+      d.committedAt = c.latest.date;
+      d.activeDays = c.activeDays || [];
+      d.commitsLast30d = c.commitsLast30d || 0;
+    }
+  });
+  renderKPIs(); renderFilters(); renderTable();
+
+  // Fire all network calls in parallel (2 per public repo)
+  const tasks = [];
+  D.forEach(d => {
+    if (d.repo) {
+      tasks.push((async () => {
+        const repo = await fetchRepoInfo(d.repo);
+        if (repo && !repo.error) d.repoSize = repo.size;
+        if (repo && repo.error) d.error = repo.error;
+      })());
+      tasks.push((async () => {
+        const com = await fetchRecentCommits(d.repo);
+        if (com && com.latest) {
+          d.lastSha = com.latest.sha;
+          d.lastMessage = com.latest.message;
+          d.lastAuthor = com.latest.author;
+          d.committedAt = com.latest.date;
+          d.activeDays = com.activeDays || [];
+          d.commitsLast30d = com.commitsLast30d || 0;
+        }
+      })());
+    }
+    if (d.status === 'LOCAL') tasks.push(pingLocal(d));
+  });
+  await Promise.all(tasks);
+
+  document.getElementById('lastRefreshed').textContent = new Date().toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit', second:'2-digit'});
+  document.getElementById('overallStatus').textContent = D.some(d => effStatus(d) === 'OFFLINE') ? 'DEGRADED · LOCAL FLEET PARTIAL' : 'OPTIMAL · ALL SYSTEMS GREEN';
+  renderKPIs(); renderFilters(); renderTable();
+  btn.classList.remove('is-loading'); btn.disabled = false;
+}
+
+// Sortable headers
+document.querySelectorAll('#tableHead th.sortable').forEach(th => {
+  th.addEventListener('click', () => {
+    const k = th.dataset.sort;
+    if (STATE.sortKey === k) STATE.sortDir = STATE.sortDir === 'asc' ? 'desc' : 'asc';
+    else { STATE.sortKey = k; STATE.sortDir = (k === 'name' || k === 'n') ? 'asc' : 'desc'; }
+    document.querySelectorAll('#tableHead th').forEach(h => h.classList.remove('sort-active'));
+    th.classList.add('sort-active');
+    th.querySelector('.sort-arrow').textContent = STATE.sortDir === 'asc' ? '▲' : '▼';
+    renderTable();
+  });
+});
+
+// Refresh button
+document.getElementById('refreshBtn').addEventListener('click', () => {
+  // Clear caches so we fetch fresh
+  D.forEach(d => { if (d.repo) { localStorage.removeItem('diag_repo:'+d.repo); localStorage.removeItem('diag_commits:'+d.repo); } });
+  loadAll();
+});
+
+// Time strip
+function tickClock() {
+  const el = document.getElementById('timeStrip');
+  if (!el) return;
+  const d = new Date();
+  el.textContent = `LOCAL_TIME: ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;
+}
+tickClock(); setInterval(tickClock, 1000);
+
+loadAll();
+</script>
+</body></html>
