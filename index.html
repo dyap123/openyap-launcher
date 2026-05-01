@@ -211,13 +211,17 @@ tailwind.config = {
 
   .lc-search {
     width: 100%;
-    background-color: rgba(20,20,24,0.78);
+    color-scheme: dark;
+    -webkit-appearance: none;
+    appearance: none;
+    /* Deep blue-black gradient with a soft cyan bloom at the bottom-left.
+       No white-tinted carbon stripes — those read as milky texture. */
+    background-color: #0b0c11;
     background-image:
-      repeating-linear-gradient(45deg,  rgba(255,255,255,0.022) 0, rgba(255,255,255,0.022) 2px, transparent 2px, transparent 4px),
-      repeating-linear-gradient(135deg, rgba(255,255,255,0.022) 0, rgba(255,255,255,0.022) 2px, transparent 2px, transparent 4px);
-    backdrop-filter: blur(20px) saturate(140%);
-    -webkit-backdrop-filter: blur(20px) saturate(140%);
-    border: 1px solid rgba(0,240,255,0.18);
+      radial-gradient(ellipse 60% 100% at 0% 100%, rgba(0,240,255,0.08) 0%, transparent 60%),
+      linear-gradient(180deg, rgba(8,8,12,0.96) 0%, rgba(14,14,20,0.96) 100%);
+    background-blend-mode: screen, normal;
+    border: 1px solid rgba(0,240,255,0.20);
     color: #dbfcff;
     font-family: 'Space Grotesk', sans-serif;
     font-size: 13px;
@@ -228,7 +232,7 @@ tailwind.config = {
     /* HUD-style chamfered top-right corner — matches the .btn-dual-tone */
     clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
     outline: none;
-    transition: border-color .25s, background-color .25s, box-shadow .25s;
+    transition: border-color .25s, background-image .25s, box-shadow .25s;
   }
   .lc-search::placeholder {
     color: rgba(219,252,255,0.32);
@@ -237,14 +241,24 @@ tailwind.config = {
     font-size: 12px;
   }
   .lc-search:hover {
-    border-color: rgba(0,240,255,0.32);
-    background-color: rgba(20,20,24,0.85);
+    border-color: rgba(0,240,255,0.34);
   }
   .lc-search:focus,
   .lc-search:focus-visible {
     border-color: #00f0ff;
-    background-color: rgba(20,20,24,0.92);
-    box-shadow: 0 0 0 1px #00f0ff, 0 0 32px rgba(0,240,255,0.22), inset 0 0 28px rgba(0,240,255,0.05);
+    /* Deeper background + stronger cyan bloom on focus */
+    background-image:
+      radial-gradient(ellipse 70% 110% at 0% 100%, rgba(0,240,255,0.14) 0%, transparent 65%),
+      linear-gradient(180deg, rgba(6,6,10,0.98) 0%, rgba(12,14,22,0.98) 100%);
+    box-shadow: 0 0 0 1px #00f0ff, 0 0 36px rgba(0,240,255,0.28), inset 0 0 30px rgba(0,240,255,0.06);
+  }
+  /* Kill autofill yellow / white that browsers paint on inputs */
+  .lc-search:-webkit-autofill,
+  .lc-search:-webkit-autofill:hover,
+  .lc-search:-webkit-autofill:focus {
+    -webkit-text-fill-color: #dbfcff;
+    -webkit-box-shadow: 0 0 0 1000px #0b0c11 inset;
+    caret-color: #00f0ff;
   }
 
   .lc-search-icon {
