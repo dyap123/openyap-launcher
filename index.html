@@ -490,6 +490,10 @@ const APPS = [
     desc: 'Pour tracking, live pours via Firebase, embed checklists, footing maps, day log management.',
     url: 'https://dyap123.github.io/cup-dashboard/', repo: 'cup-dashboard',
     status: 'ONLINE', version: 'PUR-2.8.0', last: '—' },
+  { n: '02L', name: 'CUP Dashboard · Legacy', jp: '打設管理 旧', icon: 'history', car: '70.png',
+    desc: 'Pre-Sequences snapshot — the older flow before the polygon Zone Map rebrand. Read-only legacy reference.',
+    url: 'https://dyap123.github.io/cup-dashboard/legacy.html', repo: 'cup-dashboard',
+    status: 'LEGACY', version: 'PUR-LEGACY', last: '—' },
   { n: '03', name: 'Todo', jp: 'タスク管理', icon: 'checklist', car: '1.png',
     desc: 'Firebase task manager with RFIs tab, Sisyphus chart, Alfred brain, and satisfying completion chirp.',
     url: 'https://dyap123.github.io/openyap-todo/', repo: 'openyap-todo',
@@ -661,7 +665,7 @@ function renderGrid() {
 }
 
 function renderChips() {
-  const chips = ['ALL', 'ONLINE', 'UPDATE', 'LOCAL', 'OFFLINE'];
+  const chips = ['ALL', 'ONLINE', 'UPDATE', 'LOCAL', 'OFFLINE', 'LEGACY'];
   const wrap = document.getElementById('lcFilterChips');
   wrap.innerHTML = chips.map(k => {
     const count = k === 'ALL' ? APPS.length : APPS.filter(a => effectiveStatus(a) === k).length;
