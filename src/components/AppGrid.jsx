@@ -1,7 +1,7 @@
 import { memo } from 'react'
 import AppCard from './AppCard.jsx'
 
-function AppGrid({ apps }) {
+function AppGrid({ apps, pinned, onTogglePin }) {
   if (!apps.length) {
     return (
       <div className="grid-empty">
@@ -12,7 +12,7 @@ function AppGrid({ apps }) {
   return (
     <div className="app-grid">
       {apps.map((app) => (
-        <AppCard key={app.n} app={app} />
+        <AppCard key={app.n} app={app} isPinned={pinned.has(app.n)} onTogglePin={onTogglePin} />
       ))}
     </div>
   )

@@ -6,9 +6,11 @@ import { useDebouncedValue } from './hooks/useDebouncedValue.js'
 import { useCommitTimes } from './hooks/useCommitTimes.js'
 import { useLocalPing } from './hooks/useLocalPing.js'
 import { usePageVisible } from './hooks/usePageVisible.js'
+import { usePinned } from './hooks/usePinned.js'
 import AuroraBackground from './components/AuroraBackground.jsx'
 import Header from './components/Header.jsx'
 import Footer from './components/Footer.jsx'
+import QuickAccess from './components/QuickAccess.jsx'
 import SearchBar from './components/SearchBar.jsx'
 import FilterChips from './components/FilterChips.jsx'
 import AppGrid from './components/AppGrid.jsx'
@@ -21,6 +23,7 @@ export default function App() {
   const commitTimes = useCommitTimes(APPS) // { [repo]: iso }
   const pingStatus = useLocalPing(APPS) //    { [appId]: 'LOCAL' | 'OFFLINE' }
   const visible = usePageVisible()
+  const { pinned, toggle: togglePin } = usePinned()
 
   // Pause the aurora animation when the tab is hidden (CSS reads [data-paused]).
   useEffect(() => {
@@ -46,6 +49,11 @@ export default function App() {
     return c
   }, [enriched])
 
+  const quickApps = useMemo(
+    () => enriched.filter((a) => pinned.has(a.n)),
+    [enriched, pinned],
+  )
+
   const visibleApps = useMemo(() => {
     const q = debouncedQuery.trim().toLowerCase()
     return enriched.filter((a) => {
@@ -67,12 +75,14 @@ export default function App() {
           <p className="hero__sub">アプリケーションを選択 · {counts.ALL} applications</p>
         </section>
 
+        <QuickAccess apps={quickApps} onTogglePin={togglePin} />
+
         <div className="controls">
           <SearchBar value={query} onChange={setQuery} />
           <FilterChips active={filter} counts={counts} onSelect={setFilter} />
         </div>
 
-        <AppGrid apps={visibleApps} />
+        <AppGrid apps={visibleApps} pinned={pinned} onTogglePin={togglePin} />
       </main>
 
       <Footer />

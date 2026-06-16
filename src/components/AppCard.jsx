@@ -8,7 +8,7 @@ const prefersReduced = () =>
 // data actually changed — the other ~21 keep their previous render. Tilt is done
 // with direct CSS-variable writes (no React state) and rAF-throttled so pointer
 // motion never triggers a re-render or layout thrash.
-function AppCard({ app }) {
+function AppCard({ app, isPinned, onTogglePin }) {
   const ref = useRef(null)
   const rectRef = useRef(null)
   const rafRef = useRef(0)
@@ -65,7 +65,28 @@ function AppCard({ app }) {
             {app.icon}
           </span>
         </div>
-        <span className="app-card__pill">{meta.label}</span>
+        <div className="app-card__top-right">
+          <button
+            type="button"
+            className={`app-card__pin${isPinned ? ' app-card__pin--on' : ''}`}
+            title={isPinned ? 'Remove from Quick Access' : 'Pin to Quick Access'}
+            aria-label={isPinned ? 'Remove from Quick Access' : 'Pin to Quick Access'}
+            aria-pressed={isPinned}
+            onClick={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              onTogglePin(app.n)
+            }}
+          >
+            <span
+              className="material-symbols-outlined"
+              style={{ fontVariationSettings: `'FILL' ${isPinned ? 1 : 0}` }}
+            >
+              star
+            </span>
+          </button>
+          <span className="app-card__pill">{meta.label}</span>
+        </div>
       </div>
 
       <div className="app-card__body">
