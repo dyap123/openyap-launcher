@@ -1,0 +1,23 @@
+{
+  "name": "openyap-launcher",
+  "private": true,
+  "version": "2.0.0",
+  "type": "module",
+  "description": "OpenYap hub launcher — Aurora redesign. Legacy 'OpenYap Core' lives at public/core.html.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17",
+    "vite": "^6.0.7"
+  }
+}
