@@ -93,4 +93,8 @@ export const APPS = [
   { n: '21', name: 'Bid Scout', jp: '入札探索', icon: 'travel_explore', car: '88.png',
     desc: 'SAM.gov pursuit finder for Webcor self-perform — scans federal structural-concrete + infrastructure notices, ranks by est. concrete revenue, fit, win probability & bid-due urgency, exports a ranked Google Sheet. Codex (GPT) agent inside the Const Agent web UI. Needs a free SAM.gov API key.',
     url: 'https://localhost:8484/#bids', status: 'LOCAL', version: 'BID-1.0.0', last: 'TODAY' },
+  { n: '22', name: 'Command Center', jp: '統合指令', icon: 'hub', car: '55.png',
+    desc: 'The consolidation hub — one role-aware map syncing CUP footings + EmbedYap pins (show/hide layers), drag-drop RFIs (Drive-linked), pours, synced inspections, Excel-driven schedule, live tools + crew. Firebase Auth (Admin › Super › PM › PE) + 2FA. Reads the whole OpenYap stack; deep-links out for heavy edits.',
+    url: 'https://dyap123.github.io/command-center/', repo: 'command-center',
+    status: 'UPDATE', version: 'CC-1.0.0', last: 'TODAY', featured: true },
 ]
