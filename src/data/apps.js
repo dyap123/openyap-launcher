@@ -97,4 +97,8 @@ export const APPS = [
     desc: 'The consolidation hub — one role-aware map syncing CUP footings + EmbedYap pins (show/hide layers), drag-drop RFIs (Drive-linked), pours, synced inspections, Excel-driven schedule, live tools + crew. Firebase Auth (Admin › Super › PM › PE) + 2FA. Reads the whole OpenYap stack; deep-links out for heavy edits.',
     url: 'https://dyap123.github.io/command-center/', repo: 'command-center',
     status: 'UPDATE', version: 'CC-1.0.0', last: 'TODAY', featured: true },
+  { n: '23', name: 'OnKlooth Takeoff', jp: '施工計算', icon: 'calculate', car: '10.png',
+    desc: 'Concrete superintendent field toolkit — start a project and the reshore, ACI 347 formwork-pressure, Putzmeister pump and ACI 318 rebar-lap + crane-outrigger calculators save & sync, then roll up into a priced quantity takeoff exported as PDF/XLSX. Blueprint UI (dark/light), offline-first, Alfred AI. Formulas verified against the Webcor Excel calculators.',
+    url: 'https://dyap123.github.io/onklooth-takeoff/', repo: 'onklooth-takeoff',
+    status: 'ONLINE', version: 'OKT-2.1.0', last: 'TODAY' },
 ]
