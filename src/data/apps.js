@@ -100,5 +100,5 @@ export const APPS = [
   { n: '23', name: 'OnKlooth Takeoff', jp: '施工計算', icon: 'calculate', car: '10.png',
     desc: 'Concrete superintendent estimating + field toolkit — pick a job scope (Tower / Podium / Foundation / Flatwork) and 8 calculators (concrete volume, ACI 347 formwork pressure, reshore stack, Putzmeister pump, ACI 318 rebar lap/dev + bar schedule + crane outrigger, ACI 207 mass-concrete thermal, rigging) save & sync. Add-to-estimate drops each line into its category auto-priced from an editable rate book, rolling up to category + project budgets (PDF/XLSX). Rookie mode adds per-input code help. Blueprint UI (dark/light), offline-first, Alfred AI. Formulas verified against the Webcor Excel calculators.',
     url: 'https://dyap123.github.io/onklooth-takeoff/', repo: 'onklooth-takeoff',
-    status: 'ONLINE', version: 'OKT-2.3.0', last: 'TODAY' },
+    status: 'ONLINE', version: 'OKT-2.4.0', last: 'TODAY' },
 ]
