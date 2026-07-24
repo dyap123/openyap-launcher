@@ -98,7 +98,7 @@ export const APPS = [
     url: 'https://dyap123.github.io/command-center/', repo: 'command-center',
     status: 'UPDATE', version: 'CC-1.0.0', last: 'TODAY', featured: true },
   { n: '23', name: 'OnKlooth Takeoff', jp: '施工計算', icon: 'calculate', car: '10.png',
-    desc: 'Concrete superintendent field toolkit — start a project and the reshore, ACI 347 formwork-pressure, Putzmeister pump and ACI 318 rebar-lap + crane-outrigger calculators save & sync, then roll up into a priced quantity takeoff exported as PDF/XLSX. Blueprint UI (dark/light), offline-first, Alfred AI. Formulas verified against the Webcor Excel calculators.',
+    desc: 'Concrete superintendent field toolkit — start a project and 8 calculators (concrete volume, ACI 347 formwork pressure, reshore stack, Putzmeister pump, ACI 318 rebar lap/dev + bar schedule + crane outrigger, ACI 207 mass-concrete thermal, rigging/sling loads) save & sync, then roll up into a priced quantity takeoff exported as PDF/XLSX. Blueprint UI (dark/light), offline-first, Alfred AI. Formulas verified against the Webcor Excel calculators.',
     url: 'https://dyap123.github.io/onklooth-takeoff/', repo: 'onklooth-takeoff',
-    status: 'ONLINE', version: 'OKT-2.1.0', last: 'TODAY' },
+    status: 'ONLINE', version: 'OKT-2.2.0', last: 'TODAY' },
 ]
