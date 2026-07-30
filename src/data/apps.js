@@ -105,4 +105,10 @@ export const APPS = [
     desc: 'Concrete superintendent estimating + field toolkit — pick a job scope (Tower / Podium / Foundation / Flatwork) and 8 calculators (concrete volume, ACI 347 formwork pressure, reshore stack, Putzmeister pump, ACI 318 rebar lap/dev + bar schedule + crane outrigger, ACI 207 mass-concrete thermal, rigging) save & sync. Add-to-estimate drops each line into its category auto-priced from an editable rate book, rolling up to category + project budgets (PDF/XLSX). Rookie mode adds per-input code help. Blueprint UI (dark/light), offline-first, Alfred AI. Formulas verified against the Webcor Excel calculators.',
     url: 'https://dyap123.github.io/onklooth-takeoff/', repo: 'onklooth-takeoff',
     status: 'ONLINE', version: 'OKT-2.5.0', last: 'TODAY' },
+  // No `repo` — this one lives inside openyap-infra (not a public repo) and ships with
+  // `firebase deploy --only hosting`, so there is no commit time to look up. `last` stands in.
+  { n: '24', name: 'Detailing 3D', jp: '配筋模型', icon: 'deployed_code', car: '100.png',
+    desc: 'Browser 3D model of the LACC Pico Hall shop drawings — the SE2/FE3/FE4 elevator pit and the GL X.5/24 knife-plate brace support, rebuilt parametrically from the Revit-plotted PDFs (no .rvt exists, and the rebar is not in it either). ~1,380 bars generated from the MKA grade beam, pile cap, augercast pile and pier schedules, every one traceable back to its table row on click. Show/hide layers, X-ray through the concrete, live section cuts, exploded view, orbit + first-person walkthrough, auto-registered plan underlay. Dimensions audited against the PDF vector geometry (36/36) and bar counts against the schedules (19/19). Runs on iPad and no-GPU machines — auto-detects software rendering and drops to a Lite tier. Gated behind openyap-core sign-in.',
+    url: 'https://openyap-prod.web.app/detailing-3d/',
+    status: 'ONLINE', version: 'D3D-1.0.0', last: 'TODAY' },
 ]
