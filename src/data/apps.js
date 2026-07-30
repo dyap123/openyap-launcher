@@ -107,13 +107,13 @@ export const APPS = [
     status: 'ONLINE', version: 'OKT-2.5.0', last: 'TODAY' },
   // No `repo` — this one lives inside openyap-infra (not a public repo) and ships with
   // `firebase deploy --only hosting`, so there is no commit time to look up. `last` stands in.
-  { n: '24', name: 'Detailing 3D', jp: '配筋模型', icon: 'deployed_code', car: '100.png',
-    desc: 'Browser 3D model of the LACC Pico Hall shop drawings — the SE2/FE3/FE4 elevator pit and the GL X.5/24 knife-plate brace support, rebuilt parametrically from the Revit-plotted PDFs (no .rvt exists, and the rebar is not in it either). ~1,380 bars generated from the MKA grade beam, pile cap, augercast pile and pier schedules, every one traceable back to its table row on click. Show/hide layers, X-ray through the concrete, live section cuts, exploded view, orbit + first-person walkthrough, auto-registered plan underlay. Dimensions audited against the PDF vector geometry (36/36) and bar counts against the schedules (19/19). Runs on iPad and no-GPU machines — auto-detects software rendering and drops to a Lite tier. Gated behind openyap-core sign-in.',
+  { n: '24', name: 'YapGrid', jp: '配筋模型', icon: 'deployed_code', car: '100.png',
+    desc: 'Structural shop-drawing viewer. Browser 3D model of the LACC Pico Hall sheets — the SE2/FE3/FE4 elevator pit and the GL X.5/24 knife-plate brace support, rebuilt parametrically from the Revit-plotted PDFs (no .rvt exists, and the rebar is not in it either). ~1,380 bars generated from the MKA grade beam, pile cap, augercast pile and pier schedules, every one traceable back to its table row on click. Show/hide layers, X-ray through the concrete, live section cuts, exploded view, orbit + first-person walkthrough, auto-registered plan underlay. Dimensions audited against the PDF vector geometry (36/36) and bar counts against the schedules (19/19). Runs on iPad and no-GPU machines — auto-detects software rendering and drops to a Lite tier. Gated behind openyap-core sign-in.',
     // Served on the *authDomain* origin deliberately. Firebase Hosting deploys this
     // byte-identically to openyap-prod.web.app, but signing in there is cross-origin, and
     // Safari's storage partitioning silently drops the credential — you log in, the page
     // reloads, and you are locked out again. Same origin as authDomain = first-party auth,
     // and the OAuth redirect URI is one Firebase already registered.
     url: 'https://openyap-prod.firebaseapp.com/detailing-3d/',
-    status: 'ONLINE', version: 'D3D-1.1.0', last: 'TODAY' },
+    status: 'ONLINE', version: 'YPG-1.2.0', last: 'TODAY' },
 ]
