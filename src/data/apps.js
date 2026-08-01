@@ -97,10 +97,13 @@ export const APPS = [
     desc: 'The consolidation hub — one role-aware map syncing CUP footings + EmbedYap pins (show/hide layers), drag-drop RFIs (Drive-linked), pours, synced inspections, Excel-driven schedule, live tools + crew. Firebase Auth (Admin › Super › PM › PE) + 2FA. Reads the whole OpenYap stack; deep-links out for heavy edits.',
     url: 'https://dyap123.github.io/command-center/', repo: 'command-center',
     status: 'UPDATE', version: 'CC-1.0.0', last: 'TODAY', featured: true },
-  { n: '22S', name: 'Command Center · Secure', jp: '統合指令 安全', icon: 'shield', car: '55.png',
-    desc: 'The consolidation hub on the new secured stack — Firebase Auth with a server-enforced allowlist (approved Google accounts only · Admin › Super › PM › PE), one shared openyap-core, embeds synced onto the CUP foundation map. Hosted on Firebase Hosting. Pre-launch build for testing — not yet the production cutover.',
-    url: 'https://openyap-prod.web.app/command-center/', repo: 'command-center',
-    status: 'UPDATE', version: 'CC-2.0.0-secure', last: 'TODAY', featured: true },
+  { n: '22S', name: 'Command Center · Model', jp: '統合指令 模型', icon: 'shield', car: '55.png',
+    desc: 'The consolidation hub, now derived from the IFC model rather than a digitized plan. Every footing, pile cap and grade beam is a real member keyed by its IFC globalId, with true dimensions, real modelled volumes and a grid reference — so pour tracking, embed tracking and the 3D model finally describe the same objects. 2D plan or 3D model on a toggle (the 3D pane is YapGrid itself), and Open detail lands you on the member you selected. Level and class filters keep the plan readable. Embed reconciliation puts the takeoff count beside the modelled count and flags the 31 marks that disagree. One database: inventory, tools, schedule, pours and pre-pour ops all read from Firebase — no Google Sheets scrape anywhere. Server-enforced allowlist, approved Google accounts only (Admin › Super › PM › PE).',
+    // Same reason as YapGrid below: served on the authDomain origin so sign-in is
+    // first-party. On openyap-prod.web.app, Safari's storage partitioning drops the
+    // credential and you get bounced straight back to the login screen.
+    url: 'https://openyap-prod.firebaseapp.com/command-center/', repo: 'command-center',
+    status: 'UPDATE', version: 'CC-3.0.0-model', last: 'TODAY', featured: true },
   { n: '23', name: 'OnKlooth Takeoff', jp: '施工計算', icon: 'calculate', car: '10.png',
     desc: 'Concrete superintendent estimating + field toolkit — pick a job scope (Tower / Podium / Foundation / Flatwork) and 8 calculators (concrete volume, ACI 347 formwork pressure, reshore stack, Putzmeister pump, ACI 318 rebar lap/dev + bar schedule + crane outrigger, ACI 207 mass-concrete thermal, rigging) save & sync. Add-to-estimate drops each line into its category auto-priced from an editable rate book, rolling up to category + project budgets (PDF/XLSX). Rookie mode adds per-input code help. Blueprint UI (dark/light), offline-first, Alfred AI. Formulas verified against the Webcor Excel calculators.',
     url: 'https://dyap123.github.io/onklooth-takeoff/', repo: 'onklooth-takeoff',
@@ -108,12 +111,12 @@ export const APPS = [
   // No `repo` — this one lives inside openyap-infra (not a public repo) and ships with
   // `firebase deploy --only hosting`, so there is no commit time to look up. `last` stands in.
   { n: '24', name: 'YapGrid', jp: '配筋模型', icon: 'deployed_code', car: '100.png',
-    desc: 'Structural shop-drawing viewer. Browser 3D model of the LACC Pico Hall sheets — the SE2/FE3/FE4 elevator pit and the GL X.5/24 knife-plate brace support, rebuilt parametrically from the Revit-plotted PDFs (no .rvt exists, and the rebar is not in it either). ~1,380 bars generated from the MKA grade beam, pile cap, augercast pile and pier schedules, every one traceable back to its table row on click. Show/hide layers, X-ray through the concrete, live section cuts, exploded view, orbit + first-person walkthrough, auto-registered plan underlay. Dimensions audited against the PDF vector geometry (36/36) and bar counts against the schedules (19/19). Runs on iPad and no-GPU machines — auto-detects software rendering and drops to a Lite tier. Gated behind openyap-core sign-in.',
+    desc: 'Structural shop-drawing viewer. Browser 3D model of the LACC Pico Hall foundation, imported from Webcor\'s Revit IFC — 1,779 concrete elements and 401 embeds across LEVEL 223 / 230 / 235 / 250, plus a whole-building view. Geometry is imported analytically wherever the solid is prismatic (99% of it), so plan projection, dimensions, quantities and clash checks all still work on real outlines rather than triangle soup. The IFC contains no reinforcing at all, so bars are generated from the transcribed MKA schedules and the typical details — grade beam bars develop into the pile cap per S4-1-1, pile cages terminate at the cap per 14/S4-1-2 — every bar traceable to its table row on click. Show/hide layers, X-ray, live section cuts, exploded view, orbit + first-person walkthrough, region sheets on the WCG title block. Deep-linkable: ?isolate=<globalId> lands on one member. Gated behind openyap-core sign-in.',
     // Served on the *authDomain* origin deliberately. Firebase Hosting deploys this
     // byte-identically to openyap-prod.web.app, but signing in there is cross-origin, and
     // Safari's storage partitioning silently drops the credential — you log in, the page
     // reloads, and you are locked out again. Same origin as authDomain = first-party auth,
     // and the OAuth redirect URI is one Firebase already registered.
     url: 'https://openyap-prod.firebaseapp.com/detailing-3d/',
-    status: 'ONLINE', version: 'YPG-1.2.0', last: 'TODAY' },
+    status: 'ONLINE', version: 'YPG-2.0.0', last: 'TODAY' },
 ]
